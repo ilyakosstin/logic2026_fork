@@ -1,0 +1,2467 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english,russian]{babel}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{stmaryrd}
+\usepackage{proof}
+\usepackage{tikz}
+\usepackage{enumitem}
+
+\theoremstyle{definition}
+\newtheorem*{thm}{Теорема}
+\newtheorem*{lmm}{Лемма}
+\newtheorem*{axm}{Аксиома}
+\newtheorem*{dfn}{Определение}
+
+\newcommand{\sem}[2]{\llbracket #1 \rrbracket_{#2}}
+\newcommand{\proves}{\vdash}
+\newcommand{\True}{\text{И}}
+\newcommand{\False}{\text{Л}}
+\newcommand{\amp}{\mathbin{\&}}
+\newcommand{\cn}[1]{\langle\!\!\langle #1 \rangle\!\!\rangle}
+\newcommand{\gn}[1]{\ulcorner #1 \urcorner}
+\newcommand{\Sh}[1]{S\langle #1\rangle}
+\newcommand{\Rr}[1]{R\langle #1\rangle}
+\newcommand{\Mn}[1]{M\langle #1\rangle}
+\newcommand{\todo}[1]{\textbf{TODO:} #1}
+\newcommand{\upb}{\operatorname{upb}}
+\newcommand{\rk}{\operatorname{rk}}
+
+\title{Математическая логика}
+\author{Автор: Вячеслав Чепелин\\[2pt] Лектор: Штукенберг Д.Г.}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Исчисление высказываний}
+\begin{dfn}
+Предметный язык~--- формализация мат.\ утверждений.
+\end{dfn}
+\begin{dfn}
+Метаязык (или язык исследователя)~--- язык, которым пользуются для формирования
+математических утверждений.
+\end{dfn}
+\begin{dfn}
+Высказывание~--- строка, которая либо атомарное высказывание (то есть какая-то
+переменная), либо составное (составлено с помощью отрицания, дизъюнкции,
+конъюнкции или импликации из двух высказываний).
+\end{dfn}
+\begin{dfn}
+Схема высказываний~--- высказывание, где мы можем использовать метапеременные
+(вместо которых можно подставлять что угодно).
+\end{dfn}
+\begin{dfn}
+Язык исчисления высказываний~--- язык, порождаемый грамматикой высказываний.
+\end{dfn}
+\begin{dfn}
+Оценка высказываний~--- множество истинностных значений (множество $V =
+\{\True, \False\}$) и функция оценки переменных. Все оценки составных
+высказываний рекурсивно задаются.
+\end{dfn}
+\begin{dfn}
+$\alpha$~--- тавтология (общезначима), если $\models \alpha$ или по-другому, что
+$\alpha$ истинна при всех оценках.
+\end{dfn}
+\begin{dfn}
+$\gamma_1, \dots, \gamma_n \models \alpha$~--- следствие, то есть если данные
+$\gamma$ выполнены, то $\alpha$ выполнено.
+\end{dfn}
+\begin{dfn}
+Доказательством назовем конечную последовательность $\delta_1, \dots, \delta_n$,
+где каждое $\delta_i$ либо аксиома, либо получается по правилу Modus Ponens
+($\alpha, \alpha \to \beta \Rightarrow \beta$).
+\end{dfn}
+В классической логике есть 10 аксиом, которые задаются схемами. Назовем эти
+аксиомы аксиомами исчисления высказываний.
+\begin{dfn}
+Доказательство формулы $\alpha$~--- такое доказательство, что $\delta_n \equiv
+\alpha$. Тогда $\alpha$ называется доказуемой.
+\end{dfn}
+\begin{dfn}
+Вывод формулы из гипотез $\gamma_1, \dots, \gamma_n$~--- в доказательстве можем
+использовать еще и гипотезы. Обозначается $\gamma_1, \dots, \gamma_n \proves
+\alpha$.
+\end{dfn}
+\begin{dfn}
+Теория корректна, если любое доказуемое утверждение общезначимо.
+\end{dfn}
+\begin{dfn}
+Теория полна, если любое общезначимое утверждение доказуемо.
+\end{dfn}
+\begin{dfn}
+Теория противоречива, если существует $\alpha$, такое что $\proves \alpha \amp
+\neg\alpha$. Эквивалентно, что любая формула доказуема, или для некоторой
+$\alpha$ имеет место $\proves \alpha$ и $\proves \neg\alpha$.
+\end{dfn}
+
+\begin{thm}[о дедукции]
+$\Gamma, \alpha \proves \beta \Leftrightarrow \Gamma \proves \alpha \to \beta$.
+\end{thm}
+\begin{proof}
+Доказательство в левую сторону очевидно. Докажем, что из $\Gamma, \alpha \proves
+\beta$ следует $\Gamma \proves \alpha \to \beta$.
+
+Пусть $\Gamma, \alpha \proves \beta$, т.е.\ существует вывод $D = (\delta_1,
+\dots, \delta_m)$, где $\delta_m = \beta$. Построим вывод $\alpha \to \beta$ из
+$\Gamma$ индукцией по длине вывода $D$.
+
+\emph{База:} очевидно.
+
+\emph{Шаг индукции:} Предположим, для всех выводов длины $\le m$ утверждение
+верно. Рассмотрим вывод $D$ длины $m+1$:
+\[ \delta_1, \dots, \delta_m, \delta_{m+1} (= \beta) \]
+По индукционному предположению, уже построены выводы $\zeta_i$ из $\Gamma$, такие
+что $\zeta_i = \alpha \to \delta_i$ для $i = 1, \dots, m$.
+
+Разберём возможные случаи для $\delta_{m+1}$:
+\begin{enumerate}
+\item $\delta_{m+1}$~--- аксиома или $\delta_{m+1} \in \Gamma$: Тогда $\Gamma
+  \proves \delta_{m+1}$. Добавим к построенным $\zeta_1, \dots, \zeta_m$ шаги:
+  \begin{align*}
+  &\delta_{m+1} \to (\alpha \to \delta_{m+1}) &&\text{(акс.\ 1)}\\
+  &\delta_{m+1}\\
+  &\alpha \to \delta_{m+1} &&\text{(MP)}
+  \end{align*}
+\item $\delta_{m+1} \equiv \alpha$, $\alpha \to \alpha$ выводимо всегда.
+\item $\delta_{m+1}$ получен по MP из $\delta_j$ и $\delta_k$ ($\delta_k \equiv
+  \delta_j \to \delta_{m+1}$), где $j, k < m+1$: По индукционному предположению
+  уже имеем $\Gamma \proves \alpha \to \delta_j$ и $\Gamma \proves \alpha \to
+  (\delta_j \to \delta_{m+1})$. По акс.\ 2:
+  \[ (\alpha \to \delta_j) \to (\alpha \to (\delta_j \to \delta_{m+1})) \to (\alpha \to \delta_{m+1}) \]
+  Применив MP дважды, получаем $\Gamma \proves \alpha \to \delta_{m+1}$.
+\end{enumerate}
+Таким образом, во всех случаях $\Gamma \proves \alpha \to \delta_{m+1}$, т.е.
+$\Gamma \proves \alpha \to \beta$.
+\end{proof}
+
+\section{Теорема о полноте исчисления высказываний}
+\begin{dfn}[Условное отрицание]
+Зададим некоторую оценку переменных, что $\llbracket a\rrbracket = x$. Тогда
+условным отрицанием формулы $\alpha$ назовем следующую формулу $\cn{\alpha}$:
+\[
+\cn{\alpha} =
+\begin{cases}
+\alpha, & x = \True\\
+\neg\alpha, & x = \False
+\end{cases}
+\]
+Также, если $\Gamma := \gamma_1, \gamma_2, \dots, \gamma_n$, то за $\cn{\Gamma}$
+обозначим $\cn{\gamma_1}, \cn{\gamma_2}, \dots \cn{\gamma_n}$.
+\end{dfn}
+
+\begin{thm}[о полноте]
+Если $\models \alpha$, то $\proves \alpha$.
+\end{thm}
+\begin{proof}
+\begin{enumerate}
+\item Построим таблицы истинности для каждой связки ($\star$) и докажем в них
+  каждую строку: $\cn{\varphi}, \cn{\psi} \proves \cn{\varphi \star \psi}$.
+\item Построим таблицу истинности для $\alpha$ и докажем в ней каждую строку:
+  $\cn{\Xi} \proves \cn{\alpha}$.
+\item Если формула общезначима, то в ней все строки будут иметь вид $\cn{\Xi}
+  \proves \alpha$, потому от гипотез мы сможем избавиться и получить требуемое
+  $\proves \alpha$.
+\end{enumerate}
+Приступим:
+
+\emph{Шаг 1. Лемма о связках.} Запись $\cn{\varphi}, \cn{\psi} \proves
+\cn{\varphi \star \psi}$ сводится к 14 утверждениям:
+\begin{itemize}
+\item $\neg\varphi, \neg\psi \proves \neg(\varphi \amp \psi)$ и $\neg\varphi,
+  \neg\psi \proves (\varphi \to \psi)$
+\item $\neg\varphi, \psi \proves \neg(\varphi \amp \psi)$ и $\neg\varphi, \psi
+  \proves (\varphi \to \psi)$
+\item $\varphi, \neg\psi \proves \neg(\varphi \amp \psi)$ и $\varphi, \neg\psi
+  \proves \neg(\varphi \to \psi)$
+\item $\varphi, \psi \proves (\varphi \amp \psi)$ и $\varphi, \psi \proves
+  (\varphi \to \psi)$
+\item $\neg\varphi, \neg\psi \proves \neg(\varphi \vee \psi)$ и $\varphi \proves
+  \neg\neg\varphi$
+\item $\neg\varphi, \psi \proves (\varphi \vee \psi)$ и $\neg\varphi \proves
+  \neg\varphi$
+\item $\varphi, \neg\psi \proves (\varphi \vee \psi)$
+\item $\varphi, \psi \proves (\varphi \vee \psi)$
+\end{itemize}
+
+\emph{Шаг 2. Обобщение на любую формулу.}
+
+\begin{lmm}[Условное отрицание формул]
+Пусть пропозициональные переменные $\Xi := \{X_1, \dots, X_n\}$~--- все
+переменные, которые используются в формуле $\alpha$. И пусть задана некоторая
+оценка переменных. Тогда $\cn{\Xi} \proves \cn{\alpha}$.
+\end{lmm}
+\begin{proof}
+Индукция по длине формулы $\alpha$.
+
+\emph{База:} Формула $\alpha$~--- атомарная, т.е.\ $\alpha \equiv X_i$. Тогда
+при любом $\Xi$ выполнено $\cn{\Xi}_{X_i := \True} \proves X_i$ и
+$\cn{\Xi}_{X_i := \False} \proves \neg X_i$.
+
+\emph{Индукционный переход:} $\alpha \equiv \varphi \star \psi$, причём
+$\cn{\Xi} \proves \cn{\varphi}$ и $\cn{\Xi} \proves \cn{\psi}$. Тогда построим
+вывод:
+\begin{align*}
+&(1)\dots(n)\ \cn{\varphi} &&\text{(индукционное предположение)}\\
+&(n+1)\dots(k)\ \cn{\psi} &&\text{(индукционное предположение)}\\
+&(k+1)\dots(l)\ \cn{\varphi \star \psi} &&\text{(лемма о связках: $\cn{\varphi}$ и $\cn{\psi}$ доказаны выше,}\\
+&&&\text{значит, их можно использовать как гипотезы)}
+\end{align*}
+Откуда лемма доказана.
+\end{proof}
+
+\emph{Шаг 3. Избавляемся от гипотез.}
+
+\begin{lmm}[об устранении посылок]
+Пусть при всех оценках переменных $\cn{\Xi} \proves \alpha$, тогда $\proves
+\alpha$.
+\end{lmm}
+\begin{proof}
+Индукция по количеству переменных $n$.
+
+\emph{База:} $n = 0$. Тогда $\proves \alpha$ есть из условия.
+
+\emph{Индукционный переход:} Пусть $\cn{X_1, X_2, \dots X_{n+1}} \proves
+\alpha$. Рассмотрим выводы:
+\[
+\cn{X_1, X_2, \dots X_n}, X_{n+1} \proves \alpha
+\qquad
+\cn{X_1, X_2, \dots X_n}, \neg X_{n+1} \proves \alpha
+\]
+По лемме об исключении допущения тогда $\cn{X_1, X_2, \dots X_n} \proves \alpha$.
+(Лемма об исключении допущения: $\alpha \proves \beta$ и $\neg\alpha \proves
+\beta$, то $\proves \beta$. Доказывается очень просто с помощью теоремы о
+дедукции.)
+
+При этом, $\cn{X_1, X_2, \dots X_n} \proves \alpha$ при всех оценках переменных
+$X_1, \dots X_n$. Значит, $\proves \alpha$ по индукционному предположению.
+\end{proof}
+\end{proof}
+
+\section{Топологические пространства}
+\begin{dfn}
+Упорядоченная пара $\langle X, \Omega\rangle$ где $X$~--- множество, $\Omega
+\subseteq \mathcal{P}(X)$ (называется топологией), удовлетворяющая:
+\begin{enumerate}
+\item $\varnothing \in \Omega$, $X \in \Omega$.
+\item Конечное пересечение элементов $\Omega$ принадлежит $\Omega$.
+\item Объединение любого семейства элементов $\Omega$ принадлежит $\Omega$.
+\end{enumerate}
+\end{dfn}
+\begin{dfn}
+Открытые множества~--- элементы топологии $\Omega$.
+\end{dfn}
+\begin{dfn}
+Замкнутое множество~--- множество, дополнение до $X$ которого является открытым.
+\end{dfn}
+\begin{dfn}
+Внутренность множества ($A^\circ$)~--- наибольшее открытое множество,
+содержащееся в $A$.
+\end{dfn}
+
+\subsection*{Примеры топологий}
+\begin{itemize}
+\item Топология стрелки: на $\mathbb{R}$, открытыми являются множества вида
+  $[a, +\infty)$ и пустое множество.
+\item Топология Зарисского: на $\mathbb{R}$, открытыми являются $\mathbb{R}$,
+  $\varnothing$ и все множества, дополнения которых конечны.
+\item Топология на дереве (лесе): Пусть задан лес с множеством вершин $V$ и
+  отношением порядка $\preceq$ (предок-потомок: $a \preceq b$, если $b$~---
+  потомок $a$). Открытое множество вместе с каждой вершиной содержит всех её
+  потомков.
+\end{itemize}
+
+\begin{dfn}
+Непрерывная функция (между топологическими пространствами)~--- прообраз любого
+открытого множества в $Y$ является открытым множеством в $X$.
+\end{dfn}
+\begin{dfn}
+Компактное множество~--- множество, из любого его открытого покрытия можно
+выбрать конечное подпокрытие.
+\end{dfn}
+\begin{dfn}
+Подпространство топологического пространства~--- пространство $\langle X_1,
+\Omega_1\rangle$ называется подпространством $\langle X, \Omega\rangle$, если
+$X_1 \subseteq X$ и $\Omega_1 = \{A \cap X_1 \mid A \in \Omega\}$.
+\end{dfn}
+\begin{dfn}
+Связное пространство~--- не существует таких двух непустых открытых множеств
+$A, B \in \Omega$, что $A \cup B = X$ и $A \cap B = \varnothing$.
+\end{dfn}
+\begin{dfn}
+Связное множество~--- если соответствующее ему подпространство связно.
+\end{dfn}
+
+\section{Интуиционистская логика, вывод, интерпретация, решетки}
+Основные положения интуиционизма:
+\begin{itemize}
+\item Математика не формальна.
+\item Математика независима от окружающего мира.
+\item Логика зависит от математики, а не наоборот.
+\end{itemize}
+
+\begin{dfn}
+Доказательства чистого существования (конструктивный подход): Объект считается
+существующим, если для него предоставлен эффективный метод построения, а не
+только доказательство невозможности его отсутствия.
+\end{dfn}
+\begin{dfn}[BHK-интерпретация (Брауэр, Гейтинг, Колмогоров)]
+Конструктивная интерпретация логических связок, где истинность высказывания
+означает наличие его построения (доказательства).
+\begin{itemize}
+\item $\alpha \wedge \beta$ построено, если построены $\alpha$ и $\beta$.
+\item $\alpha \vee \beta$ построено, если построено $\alpha$ или $\beta$, и
+  известно, какое именно.
+\item $\alpha \to \beta$ построено, если имеется метод, преобразующий любое
+  построение $\alpha$ в построение $\beta$.
+\item $\bot$~--- конструкция, не имеющая построения.
+\item $\neg\alpha$ построено, если построено $\alpha \to \bot$.
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+Интуиционистское исчисление высказываний (ИИВ) в гильбертовском стиле:
+Получается из аксиоматики классического исчисления высказываний (КИВ) заменой
+аксиомы снятия двойного отрицания ($\neg\neg\alpha \to \alpha$) на аксиому
+($\alpha \to (\neg\alpha \to \beta)$) (принцип взрыва).
+\end{dfn}
+\begin{dfn}
+Интуиционистское исчисление высказываний (натуральный вывод):
+\begin{itemize}
+\item Секвенция: Выражение вида $\Gamma \proves \alpha$, где $\Gamma$~---
+  множество гипотез, $\alpha$~--- заключение.
+\item Аксиома: $\Gamma, \alpha \proves \alpha$.
+\item Правила введения связок:
+  \begin{itemize}
+  \item Если $\Gamma, \alpha \proves \beta$, то $\Gamma \proves \alpha \to \beta$.
+  \item Если $\Gamma \proves \alpha$, то $\Gamma \proves \alpha \vee \beta$. Если
+    $\Gamma \proves \beta$, то $\Gamma \proves \alpha \vee \beta$.
+  \item Если $\Gamma \proves \alpha$ и $\Gamma \proves \beta$, то $\Gamma
+    \proves \alpha \wedge \beta$.
+  \end{itemize}
+\item Правила удаления связок:
+  \begin{itemize}
+  \item Если $\Gamma \proves \alpha$ и $\Gamma \proves \alpha \to \beta$, то
+    $\Gamma \proves \beta$.
+  \item Если $\Gamma \proves \alpha \vee \beta$, $\Gamma \proves \alpha \to
+    \gamma$ и $\Gamma \proves \beta \to \gamma$, то $\Gamma \proves \gamma$.
+  \item Если $\Gamma \proves \alpha \wedge \beta$, то $\Gamma \proves \alpha$.
+    Если $\Gamma \proves \alpha \wedge \beta$, то $\Gamma \proves \beta$.
+  \item Если $\Gamma \proves \bot$, то $\Gamma \proves \alpha$ (из лжи следует
+    всё).
+  \end{itemize}
+\end{itemize}
+Его мы записываем в виде дерева.
+\end{dfn}
+\begin{dfn}[Закон исключённого третьего ($\alpha \vee \neg\alpha$)]
+В BHK-интерпретации не является общезначимым, так как для нерешённой проблемы у
+нас нет построения ни для $\alpha$, ни для $\neg\alpha$.
+\end{dfn}
+\begin{dfn}[Изоморфизм Карри--Ховарда]
+Прямая аналогия между логикой и теорией типов в программировании.
+\begin{itemize}
+\item Программа ($\lambda$-выражение) $\leftrightarrow$ Доказательство.
+\item Тип выражения $\leftrightarrow$ Высказывание.
+\item Тип функции ($A \to B$) $\leftrightarrow$ Импликация ($A \to B$).
+\item Упорядоченная пара ($A \times B$) $\leftrightarrow$ Конъюнкция ($A \wedge B$).
+\item Алгебраический тип ($A + B$) $\leftrightarrow$ Дизъюнкция ($A \vee B$).
+\item Необитаемый тип (\texttt{void}, $\bot$) $\leftrightarrow$ Ложь ($\bot$).
+\end{itemize}
+\end{dfn}
+\begin{dfn}[Решётка]
+Упорядоченная пара $\langle X, \preceq\rangle$, где $X$~--- множество, $\preceq$~---
+частичный порядок на $X$, такой что для любых $a, b \in X$ определены:
+\begin{itemize}
+\item Сумма (супремум): $a + b = \sup\{a, b\}$~--- наименьший элемент $c$ такой,
+  что $a \preceq c$ и $b \preceq c$.
+\item Произведение (инфимум): $a \cdot b = \inf\{a, b\}$~--- наибольший элемент
+  $c$ такой, что $c \preceq a$ и $c \preceq b$.
+\end{itemize}
+\end{dfn}
+\begin{dfn}[Дистрибутивная решётка]
+Решётка, в которой для любых $a, b, c$ выполняется: $a \cdot (b + c) = (a \cdot
+b) + (a \cdot c)$.
+\end{dfn}
+\begin{dfn}[Псевдодополнение]
+В решётке псевдодополнением $a \to b$ называется наибольший элемент из множества
+$\{x \mid a \cdot x \preceq b\}$.
+\end{dfn}
+\begin{dfn}[Импликативная решётка]
+Решётка, в которой для любых двух элементов существует псевдодополнение.
+\end{dfn}
+$0$ и $1$ в решётке: $0$~--- наименьший элемент решётки, $1$~--- наибольший
+элемент решётки.
+\begin{dfn}[Псевдобулева алгебра (алгебра Гейтинга)]
+Импликативная решётка с наименьшим элементом $0$. В ней определяется операция
+отрицания: $\neg a = a \to 0$.
+\end{dfn}
+\begin{dfn}[Булева алгебра]
+Псевдобулева алгебра, в которой для любого элемента $a$ выполняется закон
+исключённого третьего в алгебраической форме: $a + \neg a = 1$.
+\end{dfn}
+
+\section{Продолжение решеток, алгебра Линденбаума, модели Крипке}
+\begin{dfn}
+Пусть $L$~--- множество всех высказываний. Тогда алгебра Линденбаума $\mathcal{L}
+= L/{\simeq}$, где отношение эквивалентности построено, если $a \preceq b$, $b
+\preceq a$, где $\preceq$~--- предпорядок: $\alpha \preceq \beta := \alpha
+\proves \beta$ в ИИВ.
+\end{dfn}
+\begin{thm}
+$\mathcal{L}$~--- псевдобулева алгебра. Доказательство~--- надо показать, что
+$\preceq$ отношение порядка на $\mathcal{L}$.
+\end{thm}
+\begin{dfn}
+Пусть некоторое исчисление оценивается значениями из решетки. Оценка согласована
+с исчислением, если «и» это умножение, «или» это сложение и так далее.
+\end{dfn}
+\begin{thm}
+$\llbracket\alpha\rrbracket = [\alpha]_{\mathcal{L}}$.
+\end{thm}
+
+\begin{thm}
+Интуиционистское исчисление полно в псевдобулевых алгебрах. То есть если
+$\models \alpha$ во всех псевдобулевых, то $\proves \alpha$.
+\end{thm}
+\begin{proof}
+Возьмем в качестве модели исчисления алгебру Линденбаума. Пусть $\models
+\alpha$, тогда $\llbracket\alpha\rrbracket = 1$ во всех псевдобулевых, в том
+числе и $\llbracket\alpha\rrbracket = 1_{\mathcal{L}}$. То есть
+$[\alpha]_{\mathcal{L}} = [A \to A]_{\mathcal{L}}$. То есть $A \to A \proves
+\alpha$, откуда уже следует искомое.
+
+Идейно мы просто перекидываем все в алгебру Линденбаума и пользуемся ее
+свойствами.
+\end{proof}
+
+\begin{dfn}[Модель Крипке]
+Упорядоченная тройка $\langle\mathcal{W}, \preceq, \Vdash\rangle$, где:
+\begin{itemize}
+\item $\mathcal{W}$~--- множество миров.
+\item $\preceq$~--- нестрогий частичный порядок на $\mathcal{W}$.
+\item $\Vdash\ \subseteq \mathcal{W} \times P$~--- отношение вынужденности между
+  мирами и пропозициональными переменными, монотонное относительно порядка:
+  если $W_i \preceq W_j$ и $W_i \Vdash X$, то $W_j \Vdash X$.
+\end{itemize}
+\end{dfn}
+\begin{dfn}[Вынужденность (доопределение для формул)]
+Для любого мира $W \in \mathcal{W}$:
+\begin{itemize}
+\item $W \Vdash \alpha \wedge \beta \Leftrightarrow W \Vdash \alpha$ и $W
+  \Vdash \beta$
+\item $W \Vdash \alpha \vee \beta \Leftrightarrow W \Vdash \alpha$ или $W
+  \Vdash \beta$.
+\item $W \Vdash \alpha \to \beta \Leftrightarrow$ для любого мира $W_1$ такого,
+  что $W \preceq W_1$ и $W_1 \Vdash \alpha$, выполнено $W_1 \Vdash \beta$.
+\item $W \Vdash \neg\alpha \Leftrightarrow$ ни для какого мира $W_1$ такого,
+  что $W \preceq W_1$, не верно $W_1 \Vdash \alpha$.
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+Формула $\alpha$ истинна в модели Крипке ($\models \alpha$), если $W \Vdash
+\alpha$ для всех миров $W \in \mathcal{W}$.
+\end{dfn}
+\begin{dfn}
+Общезначимость в моделях Крипке ($\Vdash_{\mathcal{K}} \alpha$), если она
+истинна во всех возможных моделях Крипке.
+\end{dfn}
+
+\begin{thm}
+Пусть $\langle\mathcal{W}, \preceq, \Vdash\rangle$~--- некоторая модель Крипке.
+Тогда она есть корректная модель ИИВ.
+\end{thm}
+\begin{proof}
+Доказательство для древовидного отношения. Заметим, что $V(\alpha) := \{w \in
+\mathcal{W} \mid w \Vdash \alpha\}$ открыто в топологии для деревьев. Значит
+положим $V = \{S \mid S \subseteq \mathcal{W} \amp S \text{ --- открыто}\}$ и
+$\llbracket\alpha\rrbracket = V(\alpha)$, получим алгебру Гейтинга.
+\end{proof}
+
+\begin{dfn}
+Система $\langle V, T, f_\wedge, f_\vee, f_\to, f_\neg\rangle$, где:
+\begin{itemize}
+\item $V$~--- множество значений.
+\item $T \in V$~--- выделенное значение «истина».
+\item $f_\wedge, f_\vee, f_\to : V \times V \to V$~--- функции для связок.
+\item $f_\neg : V \to V$~--- функция для отрицания.
+\end{itemize}
+Оценка называется табличной, если значение любой формулы вычисляется рекурсивно
+через эти функции и оценку переменных $f_P : P \to V$.
+\end{dfn}
+\begin{dfn}
+Если $\proves \alpha$ влечет $\llbracket\alpha\rrbracket = T$ при всех оценках
+пропозициональных переменных, то $\mathcal{M}$~--- табличная модель.
+\end{dfn}
+\begin{thm}
+Не существует полной конечной табличной модели для ИИВ. (Просят только
+формулировку.)
+\end{thm}
+
+\section{Гёделева алгебра, разрешимость ИИВ}
+\begin{dfn}[Гёделевизация алгебры Гейтинга ($\Gamma(\mathcal{A})$)]
+Для алгебры Гейтинга $\mathcal{A} = \langle A, \preceq\rangle$ операция
+гёделевизации строит новую алгебру $\Gamma(\mathcal{A}) = \langle A \cup
+\{\omega\}, \preceq'\rangle$, где:
+\begin{itemize}
+\item $\omega$~--- новый элемент.
+\item Отношение порядка $\preceq'$ минимальное, удовлетворяющее:
+  \begin{itemize}
+  \item $a \preceq' b$, если $a \preceq b$ в $\mathcal{A}$ и $a, b \notin
+    \{\omega, 1\}$.
+  \item $a \preceq' \omega$, если $a \ne 1$ в $\mathcal{A}$.
+  \item $\omega \preceq' 1$.
+  \end{itemize}
+\end{itemize}
+$\Gamma(\mathcal{A})$ является гёделевой алгеброй.
+\end{dfn}
+\begin{dfn}
+Отображение $g : \mathcal{A} \to \mathcal{B}$ между алгебрами Гейтинга
+называется гомоморфизмом, если оно сохраняет операции и константы:
+\[
+g(a \wedge b) = g(a) \wedge g(b),\quad g(a \vee b) = g(a) \vee g(b),\quad
+g(a \to b) = g(a) \to g(b),\quad g(0_\mathcal{A}) = 0_\mathcal{B},\quad
+g(1_\mathcal{A}) = 1_\mathcal{B}
+\]
+\end{dfn}
+
+\begin{thm}[Дизъюнктивность ИИВ]
+Если $\proves \alpha \vee \beta$, то либо $\proves \alpha$, либо $\proves
+\beta$.
+\end{thm}
+\begin{proof}
+Пусть $\proves \alpha \vee \beta$. Тогда
+$\llbracket\alpha \vee \beta\rrbracket_{\Gamma(\mathcal{L})} = 1$, так как данная
+оценка согласована с ИИВ. Тогда $\llbracket\alpha\rrbracket_{\Gamma(\mathcal{L})}
+= 1$ или $\llbracket\beta\rrbracket_{\Gamma(\mathcal{L})} = 1$, так как
+$\Gamma(\mathcal{L})$~--- гёделева. Пусть
+$\llbracket\alpha\rrbracket_{\Gamma(\mathcal{L})} = 1$, тогда из гомоморфизма
+$\llbracket\alpha\rrbracket_{\mathcal{L}} = 1$, откуда из полноты $\mathcal{L}$
+получаем, что $\proves \alpha$.
+\end{proof}
+
+\begin{dfn}
+Решётка $\mathcal{A}' = \langle A', \preceq'\rangle$ называется подрешёткой
+решётки $\mathcal{A} = \langle A, \preceq\rangle$, если:
+\begin{itemize}
+\item $A' \subseteq A$.
+\item $\preceq' = \preceq \cap (A' \times A')$ (ограничение порядка).
+\item Для любых $a, b \in A'$ их супремум и инфимум в $\mathcal{A}'$ совпадают с
+  супремумом и инфимумом в $\mathcal{A}$.
+\end{itemize}
+\end{dfn}
+
+\begin{lmm}
+Существует дистрибутивная подрешетка $\mathcal{L}'$, содержащая $a_1, \dots,
+a_n$ (это какие-то элементы), что $|L'| \le 2^{2^n}$.
+\end{lmm}
+\begin{proof}
+\emph{(В исходном конспекте отмечено: «еще не осмыслено, просто скопировано с
+теха».)}
+
+Пусть $\mathcal{L}' = \{\varphi(a_1, \dots, a_n) \mid \varphi$ составлено из
+$(+)$ и $(\cdot)\}$. Заметим, что если $p, q \in L'$, то $p \star_{\mathcal{L}} q
+\in L'$ (так как $\varphi_p(\vec a) \star \varphi_q(\vec a) = \psi(\vec a)$).
+Также ясно, что если $\sup_L\{p, q\} \in L'$ (или $\inf_L\{p, q\} \in L'$), то $p
+\star_{\mathcal{L}} q = p \star_{\mathcal{L}'} q$. Значит, $\mathcal{L}'$ также
+дистрибутивна. Построим «ДНФ»:
+\[
+\varphi(a_1, \dots, a_n) = \sum_{\text{Кн} \in \text{ДНФ}(\varphi)} \prod_{i \in \text{Кн}} a_i
+\]
+Всего не больше $2^n$ возможных компонент и $2^{2^n}$ возможных формул
+$\varphi(\vec a)$.
+\end{proof}
+
+\begin{thm}
+Если $\nvdash \alpha$ в ИИВ, то существует $\mathcal{G}$, что $\mathcal{G}
+\not\models \alpha$, причем $|\mathcal{G}| \le 2^{2^{|\alpha|+2}}$.
+\end{thm}
+\begin{proof}
+Используем полноту ИИВ относительно алгебр Гейтинга, если $\alpha$ где-то не
+доказуема, то существует алгебра Гейтинга $\mathcal{H}$, в которой $\alpha$ не
+истинна.
+
+Рассмотрим подформулы $\alpha$. Пусть $\varphi_1, \dots, \varphi_n$~--- все
+подформулы формулы $\alpha$ (включая саму $\alpha$). Число подформул $n \le
+|\alpha|$. Пусть $\mathcal{G}$~--- дистрибутивная подрешетка $\mathcal{H}$,
+построенная по $\llbracket\varphi_1\rrbracket, \dots, \llbracket\varphi_n\rrbracket$,
+$0$ и $1$. Такая существует по лемме. $\mathcal{G}$ алгебра Гейтинга, и можно
+показать, что $\mathcal{G} \not\models \alpha$. По лемме $|G| \le 2^{2^{n+2}}
+\le 2^{2^{|\alpha|+2}}$.
+\end{proof}
+
+\begin{thm}
+ИИВ разрешимо.
+\end{thm}
+\begin{proof}
+Теория разрешима, если существует эффективный алгоритм (программа), который за
+конечное время может определить, является ли любая заданная формула теоремой
+этой теории или нет.
+
+Давайте по формуле $\alpha$ построим все возможные алгебры Гейтинга $\mathcal{G}$
+размера не больше $2^{2^{|\alpha|+37}}$, если $\mathcal{G} \models \alpha$ во
+всех них, то $\proves \alpha$.
+\end{proof}
+
+\section{Категорические силлогизмы и исчисление предикатов}
+\begin{dfn}
+Категорический силлогизм~--- умозаключение, соединяющее три термина в двух
+посылках и заключении.
+\end{dfn}
+\begin{dfn}[Термины]
+\begin{itemize}
+\item Предикат (больший термин, $P$)~--- термин, являющийся сказуемым в
+  заключении.
+\item Субъект (меньший термин, $S$)~--- термин, являющийся подлежащим в
+  заключении.
+\item Средний термин ($M$)~--- термин, присутствующий в обеих посылках, но
+  отсутствующий в заключении.
+\end{itemize}
+\end{dfn}
+\begin{dfn}[Типы высказываний (соотношений)]
+\begin{itemize}
+\item $A$ (общеутвердительное): Все $S$ суть $P$. Обозначение: $SaP$.
+\item $I$ (частноутвердительное): Некоторые $S$ суть $P$. Обозначение: $SiP$.
+\item $E$ (общеотрицательное): Ни один $S$ не есть $P$. Обозначение: $SeP$.
+\item $O$ (частноотрицательное): Некоторые $S$ не суть $P$. Обозначение: $SoP$.
+\end{itemize}
+\end{dfn}
+\begin{dfn}[Фигуры категорического силлогизма]
+Расположение терминов в посылках:
+\[
+\begin{array}{l|c|c|c|c}
+ & \text{Фигура 1} & \text{Фигура 2} & \text{Фигура 3} & \text{Фигура 4}\\\hline
+\text{Большая посылка:} & M\text{---}P & P\text{---}M & M\text{---}P & P\text{---}M\\
+\text{Меньшая посылка:} & S\text{---}M & S\text{---}M & M\text{---}S & M\text{---}S\\
+\text{Заключение:} & S\text{---}P & S\text{---}P & S\text{---}P & S\text{---}P
+\end{array}
+\]
+\end{dfn}
+\begin{dfn}
+Модус~--- комбинация типов высказываний ($A$, $I$, $E$, $O$) для большой
+посылки, малой посылки и заключения в определённой фигуре (например, $AAA$ в
+фигуре 1).
+\end{dfn}
+\begin{dfn}[Типы модусов]
+\begin{itemize}
+\item Сильные (правильные)~--- модусы, всегда дающие верное заключение при
+  истинных посылках.
+\item Слабые~--- модусы, выводящие частное заключение, когда возможно общее
+  (например, вывод $SiP$ вместо $SaP$).
+\item Неправильные~--- модусы, не гарантирующие истинность заключения при
+  истинных посылках.
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+Ограничения~--- дополнительные условия корректности для некоторых модусов
+(например, требование непустоты среднего термина $M$). Или например
+существования единорогов.
+\end{dfn}
+\begin{dfn}
+Исчисление предикатов~--- формальная система для выражения высказываний с учётом
+предикатов, кванторов, предметных переменных.
+\end{dfn}
+\begin{dfn}
+Язык исчисления предикатов включает:
+\begin{itemize}
+\item Предметные выражения (термы):
+  \begin{itemize}
+  \item Предметные переменные ($x, y, \dots$).
+  \item Функциональные символы ($f, g, \dots$), включая константы ($0, 1,
+    \dots$).
+  \end{itemize}
+\item Логические выражения (формулы):
+  \begin{itemize}
+  \item Предикатные символы ($P, Q, \dots$), включая пропозициональные
+    переменные.
+  \item Логические связки: $\wedge, \vee, \to, \neg$.
+  \item Кванторы: $\forall$ (всеобщность), $\exists$ (существование).
+  \end{itemize}
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+Метаязык~--- язык, на котором говорят об объектном языке (исчислении
+предикатов), использует метапеременные для формул, термов и т.д.
+\end{dfn}
+\begin{dfn}
+Вхождение подформулы в формулу~--- позиция первого символа этой подформулы в
+формуле.
+\end{dfn}
+\begin{dfn}
+Свободное вхождение переменной~--- вхождение переменной $x$ в формулу $\varphi$,
+которое не находится в области действия квантора по $x$.
+\end{dfn}
+\begin{dfn}
+Множество свободных переменных $FV(\varphi)$~--- множество всех переменных,
+имеющих свободные вхождения в $\varphi$.
+\end{dfn}
+\begin{dfn}
+Подстановка терма $\theta$ вместо переменной $x$ в формулу $\varphi$
+($\varphi[x := \theta]$)~--- замена всех свободных вхождений $x$ в $\varphi$ на
+$\theta$.
+\end{dfn}
+\begin{dfn}
+Свобода для подстановки~--- терм $\theta$ свободен для подстановки вместо $x$ в
+$\varphi$, если после подстановки никакая переменная из $\theta$ не становится
+связанной в $\varphi$.
+\end{dfn}
+\begin{dfn}[Аксиоматика исчисления предикатов]
+\begin{itemize}
+\item Схемы аксиом (1)--(10) классического исчисления высказываний.
+\item $(\forall x.\varphi) \to \varphi[x := \theta]$ (при условии, что $\theta$
+  свободен для подстановки вместо $x$ в $\varphi$).
+\item $\varphi[x := \theta] \to \exists x.\varphi$ (при том же условии).
+\item Правила вывода:
+  \begin{itemize}
+  \item Modus Ponens (M.P.): Из $\varphi$ и $\varphi \to \psi$ выводимо $\psi$.
+  \item Правило для $\forall$: Если $\proves \varphi \to \psi$, то $\proves
+    \varphi \to \forall x.\psi$ (при условии, что $x$ не входит свободно в
+    $\varphi$).
+  \item Правило для $\exists$: Если $\proves \psi \to \varphi$, то $\proves
+    \exists x.\psi \to \varphi$ (при том же условии).
+  \end{itemize}
+\end{itemize}
+\end{dfn}
+\todo{доказательства свойств силлогизмов.}
+
+\section{Теория моделей и теоремы исчисления предикатов}
+\begin{dfn}[Оценка]
+Упорядоченная четвёрка $\langle D, F, P, E\rangle$, где:
+\begin{itemize}
+\item $D$~--- предметное множество~--- непустое множество объектов ($D \ne
+  \varnothing$), из которого берутся значения для предметных переменных.
+\item $F$~--- интерпретация функциональных символов: $F_{f^n} : D^n \to D$.
+\item $P$~--- интерпретация предикатных символов: $P_{T^n} : D^n \to V$, где $V
+  = \{\True, \False\}$.
+\item $E$~--- оценка предметных переменных. $E(x) \in D$ для любой переменной
+  $x$.
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+Формула $\varphi$ общезначима, если она истинна при любой оценке (при любых $D$,
+$F$, $P$, $E$).
+\end{dfn}
+\begin{dfn}
+Формула $\varphi$ является логическим следствием множества формул $\Gamma$, если
+$\varphi$ истинна во всех моделях, в которых истинны все формулы из $\Gamma$.
+\end{dfn}
+
+\begin{thm}[о дедукции в ИП]
+Если $\Gamma \proves \alpha \to \beta$, то $\Gamma, \alpha \proves \beta$. Если
+$\Gamma, \alpha \proves \beta$ и в доказательстве не применяются правила для
+кванторов по свободным переменным из $\alpha$, то $\Gamma \proves \alpha \to
+\beta$.
+\end{thm}
+\begin{proof}
+($\Leftarrow$)~--- как в КИВ. ($\Rightarrow$)~--- та же схема, два новых случая.
+
+Перестроим: $\delta_1, \delta_2, \dots, \delta_n \equiv \beta$ в $\alpha \to
+\delta_1, \alpha \to \delta_2, \dots, \alpha \to \delta_n$. Дополним: обоснуем
+$\alpha \to \delta_n$, если предыдущие уже обоснованы.
+
+Два новых похожих случая: правила для $\forall$ и $\exists$. Рассмотрим
+$\forall$. Доказываем $(n)\ \alpha \to \psi \to \forall x\varphi$ (правило для
+$\forall$), значит, доказано $(k)\ \alpha \to \psi \to \varphi$.
+\begin{align*}
+&(n-0.9)\ (\alpha \to \psi \to \varphi) \to (\alpha \wedge \psi) \to \varphi &&\text{Т. о полноте КИВ}\\
+&(n-0.8)\ (\alpha \wedge \psi) \to \varphi &&\text{M.P. } k, n-0.9\\
+&(n-0.4)\ (\alpha \wedge \psi) \to \forall x.\varphi &&\text{Правило для } \forall,\ n-0.8\\
+&(n-0.2)\ ((\alpha \wedge \psi) \to \forall x.\varphi) \to (\alpha \to \psi \to \forall x.\varphi) &&\text{Т. о полноте КИВ}\\
+&(n)\ \alpha \to \psi \to \forall x.\varphi &&\text{M.P. } n-0.4,\ n-0.2
+\end{align*}
+\end{proof}
+
+\begin{thm}[Корректность подстановки]
+Если $\theta$ свободен для подстановки вместо $x$ в $\varphi$, то
+$\llbracket\varphi\rrbracket_{x := \llbracket\theta\rrbracket} =
+\llbracket\varphi[x := \theta]\rrbracket$.
+\end{thm}
+\begin{proof}
+Будем делать индукцией по структуре $\varphi$.
+
+\emph{База:} $\varphi$ не имеет кванторов~--- очевидно.
+
+\emph{Индукционный переход:} пусть справедливо для $\varphi$. Покажем для
+$\varphi = \forall y.\psi$.
+\begin{itemize}
+\item $x = y$ либо $x \notin FV(\psi)$. Тогда:
+  $\llbracket\forall y.\psi\rrbracket_{x := \llbracket\theta\rrbracket} =
+  \llbracket\forall y.\psi\rrbracket = \llbracket(\forall y.\psi)[x := \theta]\rrbracket$.
+\item $x \ne y$. Тогда
+  \[
+  \llbracket\forall y.\psi\rrbracket_{x=\llbracket\theta\rrbracket}
+  \overset{1}{=} \llbracket\psi\rrbracket_{y \in D,\, x := \llbracket\theta\rrbracket}
+  \overset{2}{=} \llbracket\psi\rrbracket_{x := \llbracket\theta\rrbracket,\, y \in D}
+  = \llbracket\psi[x := \theta]\rrbracket_{y \in D}
+  = \llbracket(\forall y.\psi)[x := \theta]\rrbracket
+  \]
+\end{itemize}
+\end{proof}
+
+\begin{thm}[Корректность исчисления предикатов]
+Если $\Gamma \proves \alpha$ и в доказательстве не используются кванторы по
+свободным переменным из $FV(\Gamma)$, то $\Gamma \models \alpha$.
+\end{thm}
+\begin{proof}
+Фиксируем $D$, $F$, $P$. Делаем индукцию по длине доказательства $\alpha$: при
+любом $E$ выполнено $\Gamma \models \alpha$ при длине доказательства $n$,
+покажем для $n+1$. Здесь просто аккуратно пользуемся прошлой теоремой.
+\end{proof}
+
+\section{Теорема о полноте ИП. Начало}
+\begin{dfn}
+$\Gamma$~--- непротиворечивое множество формул, если $\Gamma \nvdash \alpha
+\amp \neg\alpha$, для любого $\alpha$.
+\end{dfn}
+\begin{dfn}
+$\Gamma$~--- полное непротиворечивое множество замкнутых бескванторных формул,
+если:
+\begin{itemize}
+\item $\Gamma$ содержит только замкнутые бескванторные формулы
+\item если $\alpha$~--- некоторая замкнутая бескванторная формула, то либо
+  $\alpha \in \Gamma$, либо $\neg\alpha \in \Gamma$
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+$\Gamma$~--- полное непротиворечивое множество замкнутых формул, если:
+\begin{itemize}
+\item $\Gamma$ содержит только замкнутые формулы
+\item если $\alpha$~--- некоторая замкнутая формула, то либо $\alpha \in
+  \Gamma$, либо $\neg\alpha \in \Gamma$
+\end{itemize}
+\end{dfn}
+
+\begin{lmm}
+Пусть $\Gamma$ непротиворечивое множество замкнутых (бескванторных) формул.
+Тогда какова бы ни была замкнутая (бескванторная) формула $\varphi$, хотя бы
+$\Gamma \cup \{\varphi\}$ или $\Gamma \cup \{\neg\varphi\}$ непротиворечиво.
+\end{lmm}
+\begin{proof}
+Из непротиворечивости $\Gamma$ следует, что непротиворечиво хотя бы одно из
+$\Gamma \cup \{\varphi\}$ или $\Gamma \cup \{\neg\varphi\}$. Если бы оба были
+противоречивы, то из $\Gamma$ выводилось бы как $\varphi \to (A \wedge \neg A)$,
+так и $\neg\varphi \to (A \wedge \neg A)$. По законам логики из этого следовало
+бы, что $\Gamma \proves A \wedge \neg A$, что противоречит непротиворечивости
+$\Gamma$.
+\end{proof}
+
+\begin{thm}[о пополнении]
+Пусть $\Gamma$~--- непротиворечивое множество замкнутых (бескванторных) формул.
+Тогда найдётся полное непротиворечивое множество замкнутых (бескванторных)
+формул $\Delta$, такое что $\Gamma \subseteq \Delta$.
+\end{thm}
+\begin{proof}
+\begin{enumerate}
+\item Занумеруем все замкнутые (бескванторные) формулы сигнатуры (их счётное
+  количество): $\varphi_1, \varphi_2, \dots$
+\item Построим последовательность расширяющихся множеств $\{\Gamma_i\}$
+  индуктивно:
+  \begin{itemize}
+  \item $\Gamma_0 = \Gamma$.
+  \item $\Gamma_{i+1} = \Gamma_i \cup \{\varphi_i\}$, если это множество
+    непротиворечиво. В противном случае $\Gamma_{i+1} = \Gamma_i \cup
+    \{\neg\varphi_i\}$ (это верно из леммы).
+  \end{itemize}
+\item Положим $\Delta = \bigcup_i \Gamma_i$.
+\item Докажем, что $\Delta$ непротиворечиво. Предположим противное: $\Delta
+  \proves \alpha \wedge \neg\alpha$. Доказательство имеет конечную длину и
+  использует конечное число гипотез $\{\delta_1, \dots, \delta_n\} \subseteq
+  \Delta$. Пусть каждая $\delta_i$ принадлежит $\Gamma_{d_i}$. Тогда все они
+  содержатся в $\Gamma_m$, где $m = \max(d_1, \dots, d_n)$. Следовательно,
+  $\Gamma_m \proves \alpha \wedge \neg\alpha$, что противоречит построению
+  $\Gamma_m$ как непротиворечивого множества.
+\end{enumerate}
+\end{proof}
+
+\begin{dfn}
+Моделью для множества формул $F$ назовем такую модель $\mathcal{M}$, что при
+всяком $\varphi \in F$ выполнено $\llbracket\varphi\rrbracket_{\mathcal{M}} =
+\True$.
+\end{dfn}
+\begin{thm}
+Любое непротиворечивое множество замкнутых формул имеет модель.
+\end{thm}
+\begin{proof}
+Построим. Пусть $M$~--- полное непротиворечивое множество замкнутых
+бескванторных формул. Тогда модель $\mathcal{M}$ задается так:
+\begin{enumerate}
+\item $D$~--- множество всевозможных предметных выражений без предметных
+  переменных.
+\item $\llbracket f(\theta_1, \dots, \theta_n)\rrbracket = \text{"f("} +
+  \llbracket\theta_1\rrbracket + \text{", "} + \dots + \text{", "} +
+  \llbracket\theta_n\rrbracket + \text{")"}$
+\item $\llbracket P(\theta_1, \dots, \theta_n)\rrbracket = \True$, если
+  $P(\theta_1, \dots, \theta_n) \in M$
+\item Так как $D \ne \varnothing$, то найдется $z \in D$. Тогда
+  $\llbracket x\rrbracket = z$. Это ничему не помешает, так как формулы замкнуты.
+\end{enumerate}
+\begin{lmm}
+$\mathcal{M} \models \varphi$ тогда и только тогда, когда $\varphi \in M$.
+\end{lmm}
+\emph{Доказательство:} Индукция по длине формулы $\varphi$.
+
+\emph{База:} предикат.
+
+\emph{Индукционный переход:} Нам надо показать, что $\mathcal{M} \models \alpha
+\star \beta \Leftrightarrow \alpha \star \beta \in M$. Это делается просто
+перебором оценок $\alpha$ и $\beta$.
+
+\emph{Концовка.} Пусть $M$~--- непротиворечивое множество замкнутых
+бескванторных формул. По теореме о пополнении существует $M'$~--- полное
+непротиворечивое множество замкнутых бескванторных формул, что $M \subseteq
+M'$. По лемме $M'$ имеет модель, эта модель подойдёт для $M$.
+\end{proof}
+
+\section{Теорема о полноте ИП, продолжение}
+\begin{dfn}
+Формула $\varphi$ имеет поверхностные кванторы (находится в предваренной форме),
+если
+\[ \varphi := \forall x.\varphi \mid \exists x.\varphi \mid \tau \]
+где $\tau$~--- формула без кванторов. То есть: $\forall x\exists y\exists
+z\forall t : \tau$.
+\end{dfn}
+\begin{thm}
+Для любой замкнутой формулы $\varphi$ найдется такая формула $\psi$ с
+поверхностными кванторами, что $\proves \psi \to \varphi$ и $\proves \varphi \to
+\psi$.
+\end{thm}
+\begin{dfn}
+Сколемизация: \todo{?????}
+\end{dfn}
+\begin{thm}[Теорема Гёделя о полноте исчисления предикатов]
+Если $M$ замкнутое непротиворечивое множество формул, то оно имеет модель.
+\end{thm}
+\begin{proof}
+Построим по $M$ множество $M'$ с поверхностными кванторами. По $M'$ построим
+непротиворечивое множество замкнутых бескванторных, дополним его до полного,
+построим для него модель. Тадам.
+\end{proof}
+\begin{thm}[Следствие (теорема о полноте)]
+Исчисление предикатов полно.
+\end{thm}
+\begin{proof}
+Доказательство от противного.
+\end{proof}
+
+\section{Машина Тьюринга}
+\begin{dfn}
+Машина Тьюринга~--- система, задаваемая:
+\begin{itemize}
+\item Внешним алфавитом: конечный набор символов $q_1, \dots, q_n$, включая
+  выделенный символ-заполнитель $q_\varepsilon$.
+\item Внутренний алфавит (состояний): конечный набор состояний $s_1, \dots,
+  s_k$, включая:
+  \begin{itemize}
+  \item $s_s$~--- начальное состояние,
+  \item $s_f$~--- допускающее состояние,
+  \item $s_r$~--- отвергающее состояние.
+  \end{itemize}
+\item Таблица переходов: функция, которая для каждой пары (текущее состояние
+  $s$, текущий символ $q$) задаёт тройку (новое состояние $s'$, символ для
+  записи $q'$, направление движения головки $\{\leftarrow, \rightarrow,
+  \cdot\}$).
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+Язык~--- произвольное множество конечных слов (строк) над некоторым конечным
+алфавитом.
+\end{dfn}
+\begin{dfn}[Разрешимый язык]
+Язык $L$ называется разрешимым, если существует машина Тьюринга, которая для
+любого входного слова $w$:
+\begin{itemize}
+\item Останавливается в допускающем состоянии ($s_f$), если $w \in L$.
+\item Останавливается в отвергающем состоянии ($s_r$), если $w \notin L$.
+\item Такая машина называется разрешающей для языка $L$.
+\end{itemize}
+\end{dfn}
+\begin{dfn}[Задача об останове (проблема останова)]
+Задача определения по описанию машины Тьюринга $M$ и входному слову $w$,
+остановится ли машина $M$ на входе $w$.
+\end{dfn}
+
+\begin{thm}[о неразрешимости задачи об останове]
+Язык останавливающихся машин Тьюринга неразрешим.
+\end{thm}
+\begin{proof}
+Схема доказательства (от противного): Предположим, существует разрешающая машина
+$S$, которая определяет, остановится ли машина $x$ на входе $y$. Построим машину
+$W$, которая на входе $x$ делает следующее:
+\begin{enumerate}
+\item Запускает $S$ на паре $(x, x)$ (т.е.\ спрашивает, остановится ли $x$ на
+  своём собственном коде).
+\item Если $S$ отвечает «да» (остановится), то $W$ уходит в бесконечный цикл.
+\item Если $S$ отвечает «нет» (не остановится), то $W$ останавливается и
+  возвращает 1.
+\end{enumerate}
+Если теперь подать код $W$ на вход самой $W$, то получим противоречие: $S(W,
+W)$ должна быть истинна тогда и только тогда, когда она ложна.
+\end{proof}
+
+\begin{thm}
+Язык всех доказуемых формул исчисления предикатов неразрешим.
+\end{thm}
+\begin{proof}
+Пусть существует машина Тьюринга, разрешающая любую формулу. На ее основе тогда
+несложно построить некоторую машину Тьюринга, перестраивающую любую машину $S$ (с
+допускающим состоянием $s_f$ и входом $y$) в ее ограничения $C$ и разрешающую
+формулу ИП $C \to \exists w_l.\exists w_r.F_{S y}(w_l, w_r, s_f)$. Эта машина
+разрешит задачу останова, а такого не может быть. \todo{}
+\end{proof}
+
+\section{Аксиоматика Пеано, арифметизация}
+\begin{dfn}[Представление чисел через натуральные]
+\begin{itemize}
+\item Целые $Z = \{\langle x, y\rangle \mid x, y \in \mathbb{N}_0\}$.
+  Интуиция: $\langle x, y\rangle = x - y$; $\langle a, b\rangle + \langle c,
+  d\rangle = \langle a + c, b + d\rangle$; $\langle a, b\rangle - \langle c,
+  d\rangle = \langle a + d, b + c\rangle$. Пусть $\langle a, b\rangle \equiv
+  \langle c, d\rangle$, если $a + d = b + c$. Тогда $\mathbb{Z} = Z/{\equiv}$;
+  $0 = [\langle 0, 0\rangle]$, $1 = [\langle 1, 0\rangle]$, $-7 = [\langle 0,
+  7\rangle]$.
+\item Рациональные $Q = \mathbb{Z} \times \mathbb{N}$~--- множество всех простых
+  дробей. $\langle p, q\rangle$~--- то же, что $p/q$; $\langle p_1, q_1\rangle
+  \equiv \langle p_2, q_2\rangle$, если $p_1 q_2 = p_2 q_1$. $\mathbb{Q} =
+  Q/{\equiv}$.
+\item Вещественные $X = \{A, B\}$, где $A, B \subseteq \mathbb{Q}$~---
+  дедекиндово сечение, если: (a) $A \cup B = \mathbb{Q}$; (b) если $a \in A$,
+  $x \in \mathbb{Q}$ и $x \le a$, то $x \in A$; (c) если $b \in B$, $x \in
+  \mathbb{Q}$ и $b \le x$, то $x \in B$; (d) $A$ не содержит наибольшего.
+  $\mathbb{R}$~--- множество всех возможных дедекиндовых сечений.
+  $\sqrt{2} = \{\{x \in \mathbb{Q} \mid x < 0 \vee x^2 < 2\}, \{x \in
+  \mathbb{Q} \mid x > 0 \amp x^2 > 2\}\}$.
+\end{itemize}
+\end{dfn}
+\begin{dfn}[Аксиоматика Пеано]
+$N$ (более точно, $\langle N, 0, (')\rangle$) соответствует аксиоматике Пеано,
+если следующее определено/выполнено:
+\begin{enumerate}
+\item Операция «штрих» $(') : N \to N$, причём нет $a, b \in N$, что $a \ne b$,
+  но $a' = b'$. Если $x = y'$, то $x$ назовём следующим за $y$, а $y$~---
+  предшествующим $x$.
+\item Константа $0 \in N$: нет $x \in N$, что $x' = 0$.
+\item Индукция. Каково бы ни было свойство («предикат») $P : N \to V$, если:
+  (a) $P(0)$; (b) при любом $x \in N$ из $P(x)$ следует $P(x')$, то при любом
+  $x \in N$ выполнено $P(x)$.
+\end{enumerate}
+Как построить? Например, в стиле алгебры Линденбаума:
+\begin{enumerate}
+\item $N$~--- язык, порождённый грамматикой $\nu ::= 0 \mid \nu\text{«'»}$
+\item $0$~--- это «0», $x'$~--- это $x + \text{«'»}$
+\end{enumerate}
+\end{dfn}
+\begin{dfn}[Арифметические операции (возведение в степень) в аксиоматике Пеано]
+\begin{itemize}
+\item цифры: $1 = 0'$, $2 = 0''$, $3 = 0'''$
+\item сложение: $a + b = \begin{cases} a, & b = 0\\ (a + c)', & b = c'\end{cases}$
+\item умножение: $a \cdot b = \begin{cases} 0, & b = 0\\ a \cdot c + a, & b = c'\end{cases}$
+\item возведение в степень: $a^b = \dots$
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+Доказательство коммутативности сложения.
+\end{dfn}
+\begin{dfn}
+Порядок теории (0, 1, 2).
+\end{dfn}
+\begin{dfn}
+Теорией первого порядка назовём исчисление предикатов с дополнительными
+(«нелогическими» или «математическими»):
+\begin{itemize}
+\item предикатными и функциональными символами;
+\item аксиомами.
+\end{itemize}
+Сущности, взятые из исходного исчисления предикатов, назовём логическими.
+\end{dfn}
+\begin{dfn}
+Формальная арифметика~--- теория первого порядка, со следующими добавленными
+нелогическими\dots
+\begin{itemize}
+\item двухместными функциональными символами $(+)$, $(\cdot)$; одноместным
+  функциональным символом $(')$, нульместным функциональным символом $0$;
+\item двухместным предикатным символом $(=)$;
+\item восемью нелогическими аксиомами:
+  \begin{align*}
+  &(A1)\ a = b \to a = c \to b = c\\
+  &(A2)\ a = b \to a' = b'\\
+  &(A3)\ a' = b' \to a = b\\
+  &(A4)\ \neg a' = 0\\
+  &(A5)\ a + 0 = a\\
+  &(A6)\ a + b' = (a + b)'\\
+  &(A7)\ a \cdot 0 = 0\\
+  &(A8)\ a \cdot b' = a \cdot b + a
+  \end{align*}
+\item нелогической схемой аксиом индукции $\psi[x := 0] \amp (\forall x.\psi \to
+  \psi[x := x']) \to \psi$ с метапеременными $x$ и $\psi$.
+\end{itemize}
+\end{dfn}
+\begin{dfn}[Доказательство $a = a$]
+Пусть $\top ::= 0 = 0 \to 0 = 0 \to 0 = 0$, тогда:
+\begin{align*}
+&(1)\ a = b \to a = c \to b = c &&\text{(Акс.\ А1)}\\
+&(2)\ (a = b \to a = c \to b = c) \to \top \to (a = b \to a = c \to b = c) &&\text{(Сх. акс. 1)}\\
+&(3)\ \top \to (a = b \to a = c \to b = c) &&\text{(M.P. 1, 2)}\\
+&(4)\ \top \to (\forall c.a = b \to a = c \to b = c) &&\text{(Введ. $\forall$)}\\
+&(5)\ \top \to (\forall b.\forall c.a = b \to a = c \to b = c) &&\text{(Введ. $\forall$)}\\
+&(6)\ \top \to (\forall a.\forall b.\forall c.a = b \to a = c \to b = c) &&\text{(Введ. $\forall$)}\\
+&(7)\ \top &&\text{(Сх. акс. 1)}\\
+&(8)\ (\forall a.\forall b.\forall c.a = b \to a = c \to b = c) &&\text{(M.P. 7, 6)}\\
+&(9)\ (\forall a.\forall b.\forall c.a = b \to a = c \to b = c) \to (\forall b.\forall c.a + 0 = b \to a + 0 = c \to b = c) &&\text{(Сх. акс. 11)}\\
+&(10)\ \forall b.\forall c.a + 0 = b \to a + 0 = c \to b = c &&\text{(M.P. 8, 9)}\\
+&(12)\ \forall c.a + 0 = a \to a + 0 = c \to a = c &&\text{(M.P. 10, 11)}\\
+&(14)\ a + 0 = a \to a + 0 = a \to a = a &&\text{(M.P. 12, 13)}\\
+&(15)\ a + 0 = a &&\text{(Акс. А5)}\\
+&(16)\ a + 0 = a \to a = a &&\text{(M.P. 15, 14)}\\
+&(17)\ a = a &&\text{(M.P. 15, 16)}
+\end{align*}
+\end{dfn}
+\begin{dfn}[Арифметизация математики, формализация категорических силлогизмов, предложенная Лейбницем]
+\begin{itemize}
+\item Любой термин~--- пара взаимно простых чисел $+a - b$. Например, мудрый~---
+  $+70 - 33$, благочестивый~--- $+10 - 3$.
+\item Общеутвердительное предложение (каждый $+a - b$ есть $+c - d$): $a : c$ и
+  $b : d$. Всякий мудрый есть благочестивый ($70 = 10 \cdot 7$, $33 = 3 \cdot
+  11$).
+\item Частноотрицательное предложение~--- не верно общеутвердительное.
+\item Общеотрицательное предложение~--- когда $a, d$ или $b, c$ имеют общий
+  делитель, отличный от 1: Ни один благочестивый ($+10 - 3$) не есть несчастный
+  ($+5 - 14$), так как $10 = 2 \cdot 5$ и $14 = 2 \cdot 7$.
+\end{itemize}
+\end{dfn}
+
+\section{Функции}
+\begin{dfn}[Базовые примитивы (исходные функции)]
+\begin{itemize}
+\item Ноль ($Z$): $Z(x) = 0$.
+\item Инкремент ($N$): $N(x) = x + 1$.
+\item Проекция ($U$): $U^n_k(x_1, \dots, x_n) = x_k$ (возвращает $k$-й аргумент).
+\item Подстановка ($S$): Если $g$~--- функция от $k$ аргументов, а $f_1, \dots,
+  f_k$~--- функции от $n$ аргументов, то $\Sh{g, f_1, \dots, f_k}(\vec x) =
+  g(f_1(\vec x), \dots, f_k(\vec x))$.
+\end{itemize}
+\end{dfn}
+\begin{dfn}[Примитивная рекурсия]
+Если $f$~--- функция от $n$ аргументов, а $g$~--- функция от $n+2$ аргументов, то
+функция $h = \Rr{f, g}$ от $n+1$ аргумента определяется так:
+\begin{itemize}
+\item $h(\vec x, 0) = f(\vec x)$
+\item $h(\vec x, y+1) = g(\vec x, y, h(\vec x, y))$
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+Примитивно-рекурсивная функция~--- функция, которую можно получить из базовых
+примитивов ($Z$, $N$, $U$) с помощью конечного числа применений операций
+подстановки ($S$) и примитивной рекурсии ($R$).
+\end{dfn}
+\begin{dfn}[Операция минимизации ($M$)]
+Если $f$~--- функция от $n+1$ аргумента, то $\Mn{f}(\vec x) = \min\{y \mid
+f(\vec x, y) = 0\}$, при условии, что такое $y$ существует. Если для всех $y$
+значение $f(\vec x, y) > 0$, то $\Mn{f}(\vec x)$ не определено.
+\end{dfn}
+\begin{dfn}
+Общерекурсивная функция~--- функция, которую можно получить из базовых
+примитивов с помощью конечного числа применений операций подстановки ($S$),
+примитивной рекурсии ($R$) и минимизации ($M$).
+\end{dfn}
+
+\begin{lmm}
+Функция Аккермана не выражена в примитивно рекурсивных.
+\[
+A(m, n) =
+\begin{cases}
+n + 1, & m = 0\\
+A(m-1, 1), & m > 0,\ n = 0\\
+A(m-1, A(m, n-1)), & m > 0,\ n > 0
+\end{cases}
+\]
+\end{lmm}
+\begin{proof}
+Для этого докажем немного другую теорему.
+\end{proof}
+\begin{thm}
+Пусть $f(\vec x)$~--- примитивно рекурсивная. Тогда найдется $k$, что $f(\vec x)
+< A(k, \max(\vec x))$.
+\end{thm}
+\begin{proof}
+Индукция по структуре $f$.
+\end{proof}
+
+\begin{dfn}
+Будем говорить, что отношение $R \subseteq \mathbb{N}_0^n$ выразимо в ФА, если
+существует формула $\rho$, что:
+\begin{itemize}
+\item если $\langle a_1, \dots, a_n\rangle \in R$, то $\proves \rho(a_1, \dots,
+  a_n)$
+\item если $\langle a_1, \dots, a_n\rangle \notin R$, то $\proves \neg\rho(a_1,
+  \dots, a_n)$
+\end{itemize}
+\end{dfn}
+\begin{thm}
+Отношение «равно» выразимо в Ф.А.: $r = \{\langle x, x\rangle \mid x \in
+\mathbb{N}_0\}$.
+\end{thm}
+\begin{dfn}
+Будем говорить, что функция $f : \mathbb{N}_0^n \to \mathbb{N}_0$ представима в
+ФА, если существует формула $\varphi$, что:
+\begin{itemize}
+\item если $f(a_1, \dots, a_n) = u$, то $\proves \varphi(a_1, \dots, a_n, u)$
+\item если $f(a_1, \dots, a_n) \ne u$, то $\proves \neg\varphi(a_1, \dots, a_n,
+  u)$
+\item для всех $a_i \in \mathbb{N}_0$ выполнено $\proves (\exists
+  x.\varphi(a_1, \dots, a_n, x)) \amp (\forall p, \forall q.\ \varphi(a_1,
+  \dots, a_n, p) \amp \varphi(a_1, \dots, a_n, q) \to p = q)$
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+Для отношения $R$ его характеристическая функция $\chi_R$ возвращает 1, если
+аргумент принадлежит $R$, и 0 иначе. Отношение выразимо тогда и только тогда,
+когда представима его характеристическая функция.
+\end{dfn}
+
+\section{Представимость примитивов, бета-функции}
+\begin{dfn}[Представимость базовых примитивов]
+\begin{itemize}
+\item Функция ноль ($Z$): $Z(x) = 0$. Представима формулой $\zeta(x, y) := (x =
+  x) \wedge (y = 0)$.
+\item Функция следования ($N$): $N(x) = x + 1$. Представима формулой $\nu(x, y)
+  := y = x'$.
+\item Функция проекции ($U^k_n$): $U^k_n(x_1, \dots, x_n) = x_k$. Представима
+  формулой $\upsilon(x_1, \dots, x_n, y) := y = x_k$.
+\item Операция подстановки: Если функции $g(y_1, \dots, y_m)$ и $h_1(\vec x),
+  \dots, h_m(\vec x)$ представимы формулами $\gamma$ и $\eta_1, \dots, \eta_m$
+  соответственно, то функция $f(\vec x) = g(h_1(\vec x), \dots, h_m(\vec x))$
+  представима формулой:
+  \[
+  \varphi(\vec x, y) := \exists z_1 \dots \exists z_m\,(\gamma(z_1, \dots, z_m, y) \wedge \eta_1(\vec x, z_1) \wedge \dots \wedge \eta_m(\vec x, z_m))
+  \]
+\end{itemize}
+\end{dfn}
+\begin{dfn}[$\beta$-функция Гёделя]
+$\beta(b, c, i)$ = остаток от деления $b$ на $(1 + c \cdot (i + 1))$.
+\end{dfn}
+\begin{thm}
+Если $a_0, \dots, a_n \in \mathbb{N}_0$, то найдутся такие $b, c \in
+\mathbb{N}_0$, что $a_i = \beta(b, c, i)$.
+\end{thm}
+\begin{thm}
+Примитив $\Rr{f, g}$ представим в Ф.А.\ формулой $\rho(x_1, \dots, x_n, y, a)$:
+\begin{multline*}
+\exists b.\exists c.\,(\exists a_0.\,\beta(b, c, 0, a_0) \amp \phi(x_1, \dots x_n, a_0))\\
+\amp \forall k.\,k < y \to \exists d.\exists e.\,\beta(b, c, k, d) \amp \beta(b, c, k', e) \amp \gamma(x_1, \dots x_n, k, d, e)\\
+\amp \beta(b, c, y, a)
+\end{multline*}
+\end{thm}
+\begin{thm}
+Пусть функция $f : \mathbb{N}_0^{n+1} \to \mathbb{N}_0$ представима в Ф.А.\
+формулой $\phi(x_1, \dots, x_n, y, r)$. Тогда примитив $\Mn{f}$ представим в
+Ф.А.\ формулой:
+\[
+\mu(x_1, \dots, x_n, y) := \phi(x_1, \dots, x_n, y, 0) \amp \forall u.\,u < y \to \neg\phi(x_1, \dots, x_n, u, 0)
+\]
+\end{thm}
+\begin{thm}
+Если $f$~--- рекурсивная функция, то она представима в Ф.А. Индукция по
+структуре $f$.
+\end{thm}
+
+\section{Гёделева нумерация. Начало пиздеца}
+\begin{dfn}[Рекурсивность представимых в Ф.А. функций]
+Фиксируем $f$ и $x_1, x_2, \dots, x_n$. Обозначим $y = f(x_1, x_2, \dots, x_n)$.
+По представимости нам известна $\phi$, что $\proves \phi(x_1, x_2, \dots, x_n,
+y)$. Давайте просто переберём все результаты и доказательства!
+\begin{enumerate}
+\item Закодируем доказательства натуральными числами.
+\item Напишем рекурсивную функцию, проверяющую доказательства на корректность.
+\item Параллельный перебор значений и доказательств: $s = 2^y \cdot 3^p$.
+\end{enumerate}
+Переберём все $s$, по $s$ получим $y$ и $p$. Проверим, что $p$~--- код
+доказательства $\proves \phi(x_1, x_2, \dots, x_n, y)$.
+\end{dfn}
+\begin{thm}
+Следующая функция рекурсивна:
+\[
+\mathrm{proof}(f, x_1, x_2, \dots, x_n, y, p) =
+\begin{cases}
+1, & \text{если } p \text{ --- гёделев номер доказательства}\\
+0, & \text{иначе}
+\end{cases}
+\]
+\end{thm}
+\begin{dfn}
+Пусть $\xi$~--- формула с единственной свободной переменной $x_1$. Тогда
+$\langle\gn{\xi}, p\rangle \in W_1$, если $\proves \xi(\gn{\xi})$ и $p$~--- номер
+доказательства.
+\end{dfn}
+\begin{dfn}
+Отношение $W_1$ рекурсивно, поэтому выражено в Ф.А.\ формулой $\omega_1$ со
+свободными переменными $x_1$ и $x_2$, причём:
+\begin{enumerate}
+\item $\proves \omega_1(\gn{\phi}, p)$, если $p$~--- гёделев номер доказательства
+  самоприменения $\phi$;
+\item $\proves \neg\omega_1(\gn{\phi}, p)$ иначе.
+\end{enumerate}
+\end{dfn}
+\todo{$W_2$, $w_2$ --- что за ферзь?}
+
+\section{Теоремы Гёделя и пиздец больного ублюдка}
+\begin{dfn}
+Теория называется $\omega$-непротиворечивой, если для любой формулы $\varphi(x)$
+из того, что доказуемы $\varphi(0), \varphi(1), \varphi(2), \dots$ (т.е.\
+$\varphi(n)$ для всех натуральных $n$), следует, что не доказуемо $\exists
+x.\neg\varphi(x)$.
+\end{dfn}
+\begin{dfn}
+Определим формулу $\sigma(x_1) := \forall p.\neg\omega_1(x_1, p)$.
+\end{dfn}
+
+\begin{thm}[Первая теорема Гёделя о неполноте арифметики]
+\begin{itemize}
+\item Если формальная арифметика непротиворечива, $\nvdash \sigma(\gn{\sigma})$.
+\item Если формальная арифметика $\omega$-непротиворечива, $\nvdash
+  \neg\sigma(\gn{\sigma})$.
+\end{itemize}
+\end{thm}
+\begin{proof}
+Напомним $\sigma(x_1) := \forall p.\neg w_1(x_1, p)$.
+\begin{enumerate}
+\item Пусть $\proves \sigma(\gn{\sigma})$. Тогда есть $p$~--- номер
+  доказательства, тогда $\proves w_1(\gn{\sigma}, p)$. Тогда $\proves \exists
+  p.w_1(\gn{\sigma}, p)$, тогда $\proves \neg\sigma(\gn{\sigma})$. Противоречие.
+\item Пусть $\proves \neg\sigma(\gn{\sigma})$ \emph{(в исходном конспекте
+  опечатка: написано $\proves \sigma(\gn{\sigma})$)}. То есть $\exists p.w_1(\gn{\sigma}, p)$.
+  \begin{itemize}
+  \item Но найдется ли натуральное число $p$, что $\proves w_1(\gn{\sigma}, p)$?
+    Пусть нет. Тогда по $\omega$-непротиворечивости $\nvdash \exists
+    p.\neg\neg w_1(\gn{\sigma}, p)$. То есть $p$ доказательство самоприменения:
+    $\proves \omega(\gn{\sigma})$. Противоречие.
+  \end{itemize}
+  \todo{что что что?}
+\end{enumerate}
+\end{proof}
+
+\begin{dfn}
+Теория называется синтаксически полной, если для любой замкнутой формулы
+$\alpha$ этой теории верно либо $\proves \alpha$, либо $\proves \neg\alpha$.
+\end{dfn}
+\begin{dfn}
+Теория называется семантически полной (относительно своей стандартной модели),
+если любая формула, истинная в стандартной модели, доказуема в теории.
+\end{dfn}
+\begin{thm}
+Формальная арифметика (при условии её непротиворечивости) не является ни
+синтаксически, ни семантически полной. Существуют формулы, которые неразрешимы
+(не доказуемы и не опровержимы), и существуют истинные в стандартной модели
+формулы, которые недоказуемы.
+\end{thm}
+\begin{proof}
+Рассмотрим Ф.А.\ с классической моделью. Из теоремы Гёделя имеем $\nvdash
+\sigma(\gn{\sigma})$. Рассмотрим $\sigma(\gn{\sigma}) \equiv \forall
+p.\neg\omega_1(\gn{\sigma}, p)$: нет числа $p$, что $p$~--- номер доказательства
+$\sigma(\gn{\sigma})$. То есть, $\llbracket\forall p.\neg w_1(\gn{\sigma},
+p)\rrbracket$. То есть $\models \sigma(\gn{\sigma})$.
+\end{proof}
+
+\begin{dfn}
+Пусть $\langle\gn{\xi}, p\rangle \in W_2$, если $\proves \neg\xi(\gn{\xi})$ и $p$
+номер доказательства. Пусть $w_2$ выражает $W_2$ в формальной арифметике.
+\end{dfn}
+\begin{thm}[Первая теорема Гёделя в форме Россера]
+Рассмотрим $\rho(x) = \forall p.\,w_1(x_1, p) \to \exists q.\,q \le p \amp
+w_2(x_2, q)$. Тогда $\nvdash \rho(\gn{\rho})$ и $\nvdash \neg\rho(\gn{\rho})$.
+Неформальный смысл: «Меня легче опровергнуть, чем доказать».
+\end{thm}
+\begin{dfn}
+Теория первого порядка, использующая нелогические функциональные символы $0$,
+$(+)$ и $(\cdot)$, нелогический предикатный символ $(=)$ и следующие
+нелогические аксиомы, называется системой Робинсона.
+\begin{align*}
+&a = a & &a = b \to b = a\\
+&a = b \to b = c \to a = c & &a = b \to a' = b'\\
+&a' = b' \to a = b & &\neg 0 = a'\\
+&a = b \to a + c = b + c \amp c + a = c + b & &a = b \to a \cdot c = b \cdot c \amp c \cdot a = c \cdot b\\
+&\neg a = 0 \to \exists b.\,a = b' & &a + 0 = a\\
+&a + b' = (a + b)' & &a \cdot 0 = 0\\
+&a \cdot b' = a \cdot b + a
+\end{align*}
+Система Робинсона неполна: аксиомы~--- в точности утверждения, необходимые для
+доказательства теорем Гёделя. Система Робинсона не имеет схем аксиом.
+\end{dfn}
+\begin{dfn}
+Теория первого порядка, использующая нелогические функциональные символы $0$,
+$1$, $(+)$, нелогический предикатный символ $(=)$ и следующие нелогические
+аксиомы, называется арифметикой Пресбургера.
+\begin{align*}
+&\neg(0 = x + 1)\\
+&x + 1 = y + 1 \to x = y\\
+&x + 0 = x\\
+&x + (y + 1) = (x + y) + 1\\
+&(\varphi(0) \amp \forall x.\,\varphi(x) \to \varphi(x + 1)) \to \forall y.\,\varphi(y)
+\end{align*}
+\end{dfn}
+\begin{thm}
+Арифметика Пресбургера разрешима и синтаксически и семантически полна.
+\end{thm}
+
+\section{Продолжение теорем Гёделя}
+\begin{dfn}
+Обозначим за $\varphi(x, p)$, выражающую в формальной арифметике рекурсивное
+отношение $\mathrm{Proof}$. Обозначим $\pi(x) = \exists p.\varphi(x, p)$.
+(Идейно, формула доказуема.)
+\end{dfn}
+\begin{dfn}
+$\mathrm{Consis} := \neg\pi(\gn{1 = 0})$. Неформальный смысл: формальная
+арифметика непротиворечива.
+\end{dfn}
+\begin{thm}[Вторая теорема Гёделя о неполноте арифметики]
+Если $\mathrm{Consis}$ доказуем, то формальная арифметика противоречива.
+\end{thm}
+\begin{proof}
+Если $\mathrm{Consis}$ доказуем, то если мы покажем, что $\proves \mathrm{Consis}
+\to \sigma(\gn{\sigma})$, то из первой теоремы мы проиграем.
+
+Рассмотрим особый $\mathrm{Consis}'$:
+\[ \pi'(x) = \exists p.\,\varphi(x, p) \amp \neg\varphi(\gn{1 = 0}, p) \]
+\[ \mathrm{Consis}' = \neg\pi'(\gn{1 = 0}) \]
+Если ФА непротиворечива, то $\llbracket\pi'(x) = \pi(x)\rrbracket$.
+\todo{} \todo{} \todo{} \todo{} \todo{} \todo{}
+\end{proof}
+\begin{dfn}[Условия выводимости Гильберта--Бернайса--Лёба]
+Будем говорить, что формула $\psi$, выражающая отношение $\mathrm{Proof}$,
+формула $\pi$ и формула $\mathrm{Consis}$ соответствуют условиям
+Гильберта--Бернайса--Лёба, если следующие условия выполнены для любой формулы
+$\alpha$:
+\begin{enumerate}
+\item $\proves \alpha$ влечет $\proves \pi(\gn{\alpha})$
+\item $\proves \pi(\gn{\alpha}) \to \pi(\gn{\pi(\gn{\alpha})})$
+\item $\proves \pi(\gn{\alpha \to \beta}) \to \pi(\gn{\alpha}) \to \pi(\gn{\beta})$
+\end{enumerate}
+\end{dfn}
+\begin{dfn}[Лемма об автоссылках]
+Для любой формулы $\varphi(x_1)$ можно построить такую замкнутую формулу
+$\alpha$ (не использующую неаксиоматических предикатных и функциональных
+символов), что $\proves \varphi(\gn{\alpha}) \leftrightarrow \alpha$.
+\end{dfn}
+\begin{thm}[Непротиворечивость ФА]
+Существует такая замкнутая формула $\gamma$, что если Ф.А.\ непротиворечива, то
+$\nvdash \gamma$, а если Ф.А.\ $\omega$-непротиворечива, то и $\nvdash
+\neg\gamma$ \emph{(в исходном конспекте: «и $\proves \neg\gamma$»)}.
+\end{thm}
+\begin{proof}
+Рассмотрим $\Phi(x_1) = \neg\pi(x_1)$. Тогда по лемме об автоссылках существует
+$\gamma$, что $\proves \gamma \leftrightarrow \neg\pi(\gn{\gamma})$.
+\begin{itemize}
+\item Предположим, что $\proves \gamma$. Тогда по вышесказанному $\nvdash
+  \gamma$.
+\item Предположим, что $\proves \neg\gamma$. Тогда $\proves \pi(\gn{\gamma})$,
+  то есть $\proves \exists p.\psi(\gn{\gamma}, p)$. Тогда по
+  $\omega$-непротиворечивости найдется $p$, что $\proves \varphi(\gn{\gamma},
+  p)$, то есть $\proves \gamma$.
+\end{itemize}
+\end{proof}
+\begin{dfn}
+Теория $\mathcal{S}$~--- расширение теории $\mathcal{T}$, если из $\proves_{\mathcal{T}}
+\alpha$ следует $\proves_{\mathcal{S}} \alpha$.
+\end{dfn}
+\begin{dfn}
+Теория $\mathcal{S}$~--- рекурсивно-аксиоматизируемая, если найдется
+$\mathcal{S}'$ с тем же языком, что
+\begin{itemize}
+\item $\proves_S \alpha$ тогда и только тогда когда $\proves_{S'} \alpha$
+\item Множество аксиом $S'$ рекурсивно (????)
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+$Th_S = \{\gn{\alpha} \mid \proves_S \alpha\}$, $Tr_S = \{\gn{\alpha} \mid
+\llbracket\alpha\rrbracket_S = \True\}$, то есть множество доказуемых и
+общезначимых в теории.
+\end{dfn}
+\todo{тут скипнуто 2 леммы, нужны ли они}
+
+\begin{thm}[о неразрешимости формальной арифметики]
+Если формальная арифметика непротиворечива, то формальная арифметика
+неразрешима.
+\end{thm}
+\begin{proof}
+Пусть формальная арифметика разрешима, откуда есть рекурсивная функция $f(x)$:
+$f(x) = 1$ тогда и только тогда, когда $x \in Th_{\text{Ф.А}}$. То есть
+$Th_{\text{Ф.А}}$ выразимо в формальной арифметике.
+\end{proof}
+
+\begin{thm}[Тарского о невыразимости истины]
+Не существует $\varphi(x)$, что $\llbracket\varphi(x)\rrbracket = \True$ (в
+стандартной интерпретации) тогда и только тогда, когда $x \in Tr_{\text{Ф.А}}$.
+\end{thm}
+\begin{proof}
+Пусть теория $S$~--- формальная арифметика + аксиомы: все истинные в
+стандартной интерпретации формулы. Очевидно, что $Th_S = Tr_S = Tr_{\text{Ф.А}}$.
+То есть $Tr_{\text{Ф.А}}$ невыразимо в $S$.
+
+Пусть $\varphi$ таково, что $\llbracket\varphi(x)\rrbracket = \True$ при $x \in
+Tr$. Тогда $\proves \varphi(x)$, если $x \in Tr$ и $\proves \neg\varphi(x)$,
+если $x \notin Tr$, тогда $Tr$ выразимо в $S$~--- противоречие. \todo{}
+\end{proof}
+
+\section{Множества}
+\begin{dfn}[Определения равенства]
+\begin{itemize}
+\item Два множества равны, если они содержат одни и те же элементы (аксиома
+  экстенсиональности).
+\item Формально: $A = B \iff \forall x(x \in A \leftrightarrow x \in B)$.
+\end{itemize}
+\end{dfn}
+\begin{dfn}[Аксиоматика Цермело--Френкеля (ZF)]
+\begin{itemize}
+\item Равенство «по Лейбницу»: объекты равны, если неразличимы. Если нечто ходит
+  как утка, выглядит как утка и крякает как утка, то это утка.
+\item Принцип объёмности: объекты равны, если состоят из одинаковых частей.
+  \[ A \subseteq B \equiv \forall x.\,x \in A \to x \in B \qquad A = B \equiv A \subseteq B \amp B \subseteq A \]
+\item Аксиома равенства: равные множества содержатся в одних и тех же
+  множествах.
+  \[ \forall x.\forall y.\forall z.\,x = y \amp x \in z \to y \in z \]
+\item Аксиома пустого. Существует пустое множество $\varnothing$.
+  $\exists s.\forall t.\,\neg t \in s$
+\item Аксиома пары. Существует $\{a, b\}$. Каковы бы ни были два множества $a$ и
+  $b$, существует множество, состоящее в точности из них.
+  \[ \forall a.\forall b.\exists s.\,a \in s \amp b \in s \amp \forall c.\,c \in s \to c = a \vee c = b \]
+\item Аксиома объединения: существует $\bigcup x$. Для любого непустого
+  множества $x$ найдется такое множество, состоящее в точности из тех
+  элементов, из которых состоят элементы $x$.
+  \[ \forall x.\,(\exists y.\,y \in x) \to \exists p.\forall y.\,y \in p \leftrightarrow \exists s.\,y \in s \amp s \in x \]
+\item Аксиома степени: существует $\mathcal{P}(x)$. Каково бы ни было множество
+  $x$, существует множество, содержащее в точности все возможные подмножества
+  множества $x$.
+  \[ \forall x.\exists p.\forall y.\,y \in p \leftrightarrow y \subseteq x \]
+\item Схема аксиом выделения: существует $\{t \in x \mid \phi(t)\}$. Для любого
+  множества $x$ и любой формулы от одного аргумента $\phi(y)$ ($b$ не входит
+  свободно в $\phi$), найдется $b$, в которое входят те и только те элементы из
+  множества $x$, что $\phi(y)$ истинно.
+  \[ \forall x.\exists b.\forall y.\,y \in b \leftrightarrow (y \in x \amp \phi(y)) \]
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+Упорядоченной парой двух множеств $a$ и $b$ назовём $\{\{a\}, \{a, b\}\}$, или
+$\langle a, b\rangle$.
+\end{dfn}
+\begin{thm}
+Упорядоченную пару можно построить для любых множеств.
+\end{thm}
+\begin{proof}
+Применить аксиому пары, теорему о существовании $\{X\}$, аксиому пары.
+\end{proof}
+\begin{dfn}[Типы порядка]
+\begin{itemize}
+\item Частичный порядок~--- рефлексивное, антисимметричное, транзитивное
+  отношение.
+\item Линейный порядок~--- частичный порядок, в котором любые два элемента
+  сравнимы.
+\item Полный (тотальный) порядок~--- обычно синоним линейного порядка; иногда
+  требует, чтобы каждое подмножество имело наименьший элемент (более сильное
+  условие).
+\end{itemize}
+\end{dfn}
+\begin{dfn}[Аксиома бесконечности]
+Инкремент: $x' \equiv x \cup \{x\}$.
+
+Аксиома бесконечности. Существует $N$: $\varnothing \in N \amp \forall x.\,x \in
+N \to x' \in N$. В $N$ есть всевозможные множества вида $\varnothing$,
+$\{\varnothing\}$, $\{\varnothing, \{\varnothing\}\}$, $\{\varnothing,
+\{\varnothing\}, \{\varnothing, \{\varnothing\}\}\}$, \dots
+\end{dfn}
+\begin{dfn}[Ординальные числа]
+\begin{itemize}
+\item Транзитивное множество $X$: $\forall x.\forall y.\,x \in y \amp y \in X
+  \to x \in X$.
+\item Ординал (порядковое число)~--- вполне упорядоченное отношением $(\in)$
+  транзитивное множество.
+\end{itemize}
+\end{dfn}
+\begin{thm}
+Если $x, y$~--- ординалы, то $x = y$, или $x \in y$, или $y \in x$.
+\end{thm}
+$\omega$~--- наименьший предельный ординал.
+\begin{thm}
+$\omega$ существует.
+\end{thm}
+\begin{proof}
+Пусть $\omega = \{x \in N \mid x \text{ конечен}\}$. Тогда:
+\begin{itemize}
+\item меньше $\omega$ предельных нет: если $\theta$ таков, что $\theta \in
+  \omega$, тогда $\theta$ конечен.
+\item $\omega$ предельный: Пусть $\theta$ таков, что $\theta' = \omega$. Тогда
+  $\theta$ конечен и $\theta'$ тоже конечен.
+\end{itemize}
+\end{proof}
+$\omega'$~--- тоже ординал.
+
+\begin{dfn}
+Порядковый тип множества~--- некоторое свойство, общее для всех множеств,
+изоморфных относительно биективных отображений, сохраняющих порядок.
+
+Порядковый тип вполне упорядоченного множества $\langle S, (\preceq)\rangle$~---
+ординал $A$, для которого есть биективное отображение $f : S \to A$,
+сохраняющее порядок: $a \preceq b$ тогда и только тогда, когда $f(a) \le f(b)$.
+
+Множество $\mathbb{Z}$ не имеет порядкового типа (в смысле определения через
+ординалы): оно не вполне упорядочено.
+\end{dfn}
+\begin{dfn}[Операции над ординалами]
+\begin{itemize}
+\item $a + b$~--- порядковый тип $a \uplus b$ (отмеченного объединения), причём
+  $x_a < y_b$ при любых $x \in a$ и $y \in b$.
+\item $a \cdot b$~--- порядковый тип $a \times b$, произведение упорядочено
+  лексикографически: $\langle x_1, y_1\rangle < \langle x_2, y_2\rangle$, если
+  $x_1 < x_2$ или $x_1 = x_2$ и $y_1 < y_2$.
+\end{itemize}
+\end{dfn}
+\begin{dfn}
+$\upb x$~--- верхняя грань множества ординалов, $\upb x = \bigcup_{a \in x} a$.
+\[
+\upb\{\varnothing', \varnothing'', \varnothing''''\} = \varnothing' \cup \varnothing'' \cup \varnothing'''' = \{\varnothing\} \cup \{\varnothing, \{\varnothing\}\} \cup \{\varnothing, \{\varnothing\}, \{\varnothing, \{\varnothing\}\}, \{\varnothing, \{\varnothing\}, \{\varnothing, \{\varnothing\}\}\}\} = \varnothing''''
+\]
+\end{dfn}
+\begin{dfn}[Ординалы (порядковые числа) и порядок]
+\begin{itemize}
+\item Добавить элемент перед бесконечностью: $\mathbb{N}$ и $\mathbb{N}_0$.
+  $1 + \omega = \omega$.
+\item Добавить элемент после бесконечности ($+\infty$). $\omega + 1 \ne \omega$.
+\end{itemize}
+Упорядоченные пары натуральных чисел имеют порядковый тип $\omega^2$:
+$\langle 3, 5\rangle < \langle 4, 3\rangle$, $\omega \cdot 3 + 5 < \omega \cdot
+4 + 3$.
+
+Списки натуральных чисел~--- порядковый тип $\omega^\omega$:
+\[ \langle 3, 1, 4, 1, 5, 9\rangle : \omega^5 \cdot 3 + \omega^4 \cdot 1 + \omega^3 \cdot 4 + \omega^2 \cdot 1 + \omega^1 \cdot 5 + 9 \]
+\end{dfn}
+
+\section{Мощность множеств}
+\begin{dfn}[Аксиома фундирования]
+В каждом непустом множестве найдется элемент, не пересекающийся с исходным
+множеством.
+\[ \forall x.\,x = \varnothing \vee \exists y.\,y \in x \amp \forall z.\,z \in x \to z \notin y \]
+Иными словами, в каждом множестве есть элемент, минимальный по отношению
+$(\in)$.
+\end{dfn}
+Идея Рассела: каждому множеству припишем тип (тип пустого 0, тип множеств 1, тип
+множеств множеств 2 и т.п.). Тогда конструкция невозможна: $\{x \mid x \in x\}$.
+Аксиома фундирования позволяет определить функцию ранга:
+\[ \rk(x) = \upb\{\rk(y) \mid y \in x\} \]
+\begin{dfn}[Схема аксиом подстановки]
+Пусть задана некоторая функция $f$, представимая в исчислении предикатов: то
+есть задана некоторая формула $\varphi$, такая, что $f(x) = y$ тогда и только
+тогда, когда $\varphi(x, y) \amp \exists!z.\,\varphi(x, z)$. Тогда для любого
+множества $S$ существует множество $f(S)$~--- образ множества $S$ при
+отображении $f$:
+\[
+\forall s.\,(\forall x.\forall y_1.\forall y_2.\,x \in s \amp \phi(x, y_1) \amp \phi(x, y_2) \to y_1 = y_2) \to (\exists t.\forall y.\,y \in t \leftrightarrow \exists x.\,x \in s \amp \phi(x, y))
+\]
+\end{dfn}
+\begin{dfn}
+Множество $A$ равномощно $B$ ($|A| = |B|$), если существует биекция $f : A \to
+B$.
+\end{dfn}
+\begin{thm}[Кантора--Бернштейна]
+Множество $A$ имеет мощность, не превышающую мощности $B$ ($|A| \le |B|$),
+если существует инъекция $f : A \to B$. \emph{(Формулировка в исходном конспекте
+неточна; сама теорема: если $|A| \le |B|$ и $|B| \le |A|$, то $|A| = |B|$.)}
+\end{thm}
+\begin{proof}
+Избавимся от множества $B$: пусть $A_0 = A$; $A_1 = g(B)$; $A_{k+2} =
+g(f(A_k))$. (В исходном конспекте здесь иллюстрация: убывающая цепочка $A_0
+\supseteq A_1 \supseteq A_2 \supseteq \dots$ с пересечением $\bigcap A_k$ и
+соответствующая цепочка $B_0 \supseteq B_1 \supseteq \dots$.)
+
+Тогда, если существует $h : A_0 \to A_1$~--- биекция, то тогда $g^{-1} \circ h :
+A \to B$~--- требуемая биекция.
+
+Пусть $C_k = A_k \setminus A_{k+1}$. Тогда $g(f(C_k)) = g(f(A_k)) \setminus
+g(f(A_{k+1})) = A_{k+2} \setminus A_{k+3} = C_{k+2}$.
+
+Тогда определим $h(x)$ следующим образом:
+\[
+h(x) =
+\begin{cases}
+x, & x \in C_{2k+1} \vee x \in \bigcap A_k\\
+g(f(x)), & x \in C_{2k}
+\end{cases}
+\]
+\end{proof}
+\begin{dfn}
+Кардинальное число~--- наименьший ординал, не равномощный никакому меньшему:
+$\forall x.\,x \in c \to |x| < |c|$.
+\end{dfn}
+\begin{thm}
+Конечные ординалы~--- кардинальные числа.
+\end{thm}
+\begin{dfn}
+Мощность множества ($|S|$)~--- равномощное ему кардинальное число.
+\end{dfn}
+\begin{thm}[Кантор]
+$|\mathcal{P}(S)| > |S|$.
+\end{thm}
+\begin{proof}
+Пусть $S = \{a, b, c, \dots\}$. (В исходном конспекте здесь рисунок~---
+диагональная таблица.) Пусть $f : S \to \mathcal{P}(S)$~--- биекция. Тогда
+$\sigma = \{y \in S \mid y \notin f(y)\}$. Пусть $f(x) = \sigma$. Но $x \in f(x)$
+тогда и только тогда, когда $x \notin \sigma$, то есть $f(x) \ne \sigma$.
+\end{proof}
+\begin{dfn}
+$\aleph_0 := |\omega|$; $\aleph_{k+1} := \min\{|a| \mid a$~--- ординал, $\aleph_k
+< |a|\}$.
+\end{dfn}
+\begin{dfn}
+$\beth_0 := |\omega|$; $\beth_{k+1} := |\mathcal{P}(\beth_k)|$.
+\end{dfn}
+Континуум-гипотеза (Г.~Кантор, 1877): $\aleph_1 = \beth_1$ (не существует
+мощности, промежуточной между счётной и континуумом).
+
+Обобщённая континуум-гипотеза: $\aleph_n = \beth_n$ при всех $n$.
+\begin{dfn}
+Утверждение $\alpha$ противоречит аксиоматике: $\proves \alpha$ ведёт к
+противоречию.
+\end{dfn}
+\begin{dfn}
+Утверждение $\alpha$ не зависит от аксиоматики: $\nvdash \alpha$ и $\nvdash
+\neg\alpha$.
+\end{dfn}
+\begin{thm}
+Утверждение $\aleph_1 = \beth_1$ не зависит от аксиоматики ZFC.
+\end{thm}
+
+\section{Модели, мощность}
+\begin{dfn}
+Пусть задана модель $\langle D, F_n, P_n\rangle$ для некоторой теории первого
+порядка. Её мощностью будем считать мощность $D$.
+\end{dfn}
+\begin{dfn}
+Пусть задана формальная теория с аксиомами $\{\alpha_n\}$. Её мощность~---
+мощность множества $\{\alpha_n\}$. Формальная арифметика, исчисление предикатов,
+исчисление высказываний~--- счётно-аксиоматизируемые.
+\end{dfn}
+\begin{dfn}
+$\mathcal{M}' = \langle D', F'_n, P'_n\rangle$~--- элементарная подмодель
+$\mathcal{M} = \langle D, F_n, P_n\rangle$, если:
+\begin{itemize}
+\item $D' \subseteq D$, $F'_n, P'_n$~--- сужение $F_n, P_n$ (замкнутое на $D'$).
+\item $\mathcal{M} \models \varphi(x_1, \dots, x_n)$ тогда и только тогда, когда
+  $\mathcal{M}' \models \varphi(x_1, \dots, x_n)$ при $x_i \in D'$.
+\end{itemize}
+\end{dfn}
+
+\begin{thm}[Лёвенгейма--Сколема]
+Пусть $T$~--- множество всех формул теории первого порядка. Пусть теория имеет
+некоторую модель $\mathcal{M}$. Тогда найдётся элементарная подмодель
+$\mathcal{M}'$, причём $|\mathcal{M}'| \le \max(\aleph_0, |T|)$.
+\end{thm}
+\begin{proof}
+План:
+\begin{enumerate}
+\item Построим $D_0$~--- множество всех значений, которые упомянуты в языке
+  теории.
+\item Будем последовательно пополнять $D_i$: $D_0 \subseteq D_1 \subseteq D_2
+  \dots$, следя за мощностью. $D' = \bigcup D_i$.
+\item Покажем, что $\langle D', F_n, P_n\rangle$~--- требуемая подмодель.
+\end{enumerate}
+Пусть $\{f^0_k\}$~--- все 0-местные функциональные символы теории.
+\begin{enumerate}
+\item $D_0 = \{\llbracket f^0_k\rrbracket\}$, если есть хотя бы один $f^0_k$.
+\item Если таких $f^0_k$ нет, возьмём какое-нибудь одно значение из $D$.
+\end{enumerate}
+Очевидно, $|D_0| \ge |T|$ \emph{(так в исходном конспекте)}.
+
+Фиксируем некоторый $D_k$. Напомним, $T$~--- множество всех формул теории.
+Рассмотрим $\varphi \in T$.
+\begin{enumerate}
+\item $\varphi$ не имеет свободных переменных~--- пропустим.
+\item $\varphi$ имеет хотя бы одну свободную переменную $y$.
+  \begin{enumerate}
+  \item $\varphi(y, x_1, \dots, x_n)$ при $y, x_i \in D_k$ бывает истинным и
+    ложным~--- ничего не меняем
+  \item $\varphi(y, x_1, \dots, x_n)$ при $y \in D$ и $x_i \in D_k$ либо всегда
+    истинен, либо всегда ложен~--- ничего не меняем
+  \item $\varphi(y, x_1, \dots, x_n)$ при $y, x_i \in D_k$ тождественно истинен
+    или ложен, но при $y' \in D \setminus D_k$ отличается~--- добавим $y'$ к
+    $D_{k+1}$. Вместе добавим всевозможные $\llbracket\theta(y')\rrbracket$.
+  \end{enumerate}
+\end{enumerate}
+\begin{enumerate}
+\item Всего добавили не больше $|T| \cdot |T|$ (для каждой формулы $\varphi$,
+  возможно, будет добавлен $y$~--- и всевозможные выражения $\theta(y)$,
+  допустимые в языке), и $|D_0| \ge |T| \ge |T| \cdot |T|$, отсюда $|D_k| \ge
+  |T| \cdot |T|$.
+\item $|D'| = |\bigcup D_i| \ge |T| \cdot |T| \cdot \aleph_0$.
+\item Тогда $|T| \cdot |T| \cdot \aleph_0 = \max(|T|, \aleph_0)$. Разберём
+  случаи:
+  \begin{enumerate}
+  \item Если $|T| < \aleph_0$, тогда $(|T| \cdot |T|) \cdot \aleph_0 = \aleph_0$.
+  \item Если $|T| \le \aleph_0$, тогда $(|T| \cdot |T|) \cdot \aleph_0 = |T|
+    \cdot \aleph_0 = |T|$.
+  \end{enumerate}
+\item Итого, $|D'| \ge \max(|T|, \aleph_0)$.
+\end{enumerate}
+\emph{(Знаки неравенства в п.\ 1--4 приведены как в исходном конспекте; по
+смыслу~--- оценки сверху, $\le$.)}
+
+Докажем, что $\mathcal{M}'$~--- элементарная подмодель. Индукцией по структуре
+формул $\tau \in T$ покажем, что все формулы можно вычислить, и что
+$\llbracket\varphi\rrbracket_{\mathcal{M}'} = \llbracket\varphi\rrbracket_{\mathcal{M}}$.
+\begin{enumerate}
+\item База, 0 связок. $\tau \equiv P(f_1(x_1, \dots, x_n), \dots, f_{n}(x_1,
+  \dots, x_n))$. Если $x_i \in D'$, то значит, добавлены на некоторых шагах
+  (максимальный пусть $t$). Поэтому в $D_{t+1}$ можно вычислить формулу, и её
+  значение сохранилось.
+\item Переход. Пусть формулы из $k$ связок сохраняют значения. Рассмотрим
+  $\tau$ с $k+1$ связкой.
+  \begin{enumerate}
+  \item $\tau \equiv \rho \star \sigma$~--- очевидно.
+  \item $\tau \equiv \forall y.\varphi(y, x_1, \dots, x_n)$. Каждый $x_i$ добавлен
+    на каком-то шаге~--- максимум $t$. Если $\varphi(y, x_1, \dots, x_n)$
+    бывает истинен и ложен при $y_t, y_f \in D$, то $y_t, y_f \in D_{t+1}$ (по
+    построению). Поэтому, если $\mathcal{M} \not\models \forall y.\varphi(y,
+    x_1, \dots, x_n)$, то и $\mathcal{M}' \not\models \forall y.\varphi(y, x_1,
+    \dots, x_n)$. Если же $\varphi(y, x_1, \dots, x_n)$ не меняется от $y$, то
+    тем более $\llbracket\varphi\rrbracket_{\mathcal{M}'} =
+    \llbracket\varphi\rrbracket_{\mathcal{M}}$.
+  \item $\tau \equiv \exists y.\varphi(y, x_1, \dots, x_n)$~--- аналогично.
+  \end{enumerate}
+\end{enumerate}
+\end{proof}
+
+\begin{dfn}[«Парадокс» Сколема]
+Как известно, $|\mathbb{R}| = |\mathcal{P}(\mathbb{N})| > |\mathbb{N}| =
+\aleph_0$. Однако, ZFC~--- теория со счётным количеством формул. Значит,
+существует счётная модель ZFC, то есть $|\mathbb{R}| = \aleph_0$. В чём ошибка?
+У равенств разный смысл, первое~--- в предметном языке, второе~--- в метаязыке.
+\end{dfn}
+
+\section{Аксиома выбора}
+\begin{axm}[выбора]
+Из любого семейства дизъюнктных непустых множеств $\mathcal{A}$ можно выбрать
+непустую трансверсаль~--- множество $S$, что $|S \cap A| = 1$ для каждого $A \in
+\mathcal{A}$. Иначе, $S \in \times\mathcal{A}$.
+\end{axm}
+
+\begin{thm}[Функциональный вариант аксиомы выбора]
+Пусть $\mathcal{A}$~--- семейство непустых множеств. Тогда существует $f :
+\mathcal{A} \to \bigcup\mathcal{A}$, причём $\forall a.\,a \in \mathcal{A} \to
+f(a) \in a$.
+\end{thm}
+\begin{proof}
+Пусть $X(A) = \{\langle A, a\rangle \mid a \in A\}$, по семейству $\mathcal{A}$
+рассмотрим $\{X(A) \mid A \in \mathcal{A}\}$
+\begin{itemize}
+\item непустых: если $A \in \mathcal{A}$, $A \ne \varnothing$, то $X(A) \ne
+  \varnothing$;
+\item дизъюнктное: если $A_0, A_1 \in \mathcal{A}$, $A_0 \ne A_1$, то $X(A_0)
+  \cap X(A_1) = \varnothing$
+\end{itemize}
+тогда по аксиоме выбора $\exists f.\,f \in \times\mathcal{A}$.
+\end{proof}
+
+\begin{thm}[Лемма Цорна]
+Если задано $\langle M, (\preceq)\rangle$ и для всякого линейно упорядоченного
+$S \subseteq M$ выполнено $\upb_M S \ne \varnothing$, то в $M$ существует
+максимальный элемент.
+\end{thm}
+\begin{thm}[Цермело]
+На любом множестве можно задать полный порядок.
+\end{thm}
+\begin{thm}
+У любой сюръективной функции существует частичная обратная.
+\end{thm}
+\begin{thm}
+Аксиома выбора $\to$ лемма Цорна: без доказательства.
+\end{thm}
+
+Назовём (для данного раздела) упорядоченным множеством пару $\langle S,
+(\prec_S)\rangle$. Отношение порядка $(\prec_S)$ может быть как строгим, так и
+нестрогим.
+
+\begin{dfn}
+Будем говорить, что $\langle S, (\prec_S)\rangle$~--- начальный отрезок $\langle
+T, (\prec_T)\rangle$, если:
+\begin{itemize}
+\item $S \subseteq T$;
+\item если $a, b \in S$, то $a \prec_S b$ тогда и только тогда, когда $a \prec_T
+  b$;
+\item если $a \in S$, $b \in T \setminus S$, то $a \prec_T b$.
+\end{itemize}
+Будем обозначать это как $\langle S, (\prec_S)\rangle \sqsubseteq \langle T,
+(\prec_T)\rangle$ или как $S \sqsubseteq T$, если порядок на множествах понятен
+из контекста.
+\end{dfn}
+\begin{thm}
+Отношение «быть начальным отрезком» является отношением нестрогого порядка.
+\end{thm}
+\begin{thm}[о верхней грани]
+Если семейство упорядоченных множеств $X$ линейно упорядочено отношением «быть
+начальным отрезком», то у него есть верхняя грань.
+\end{thm}
+\begin{proof}
+Пусть $M = \bigcup\{T \mid \langle T, (\prec_T)\rangle \in X\}$ и $(\prec_M) =
+\bigcup\{(\prec_T) \mid \langle T, (\prec_T)\rangle \in X\}$.
+
+Покажем, что если $\langle A, (\prec_A)\rangle \in X$, то $A \sqsubseteq M$.
+Рассмотрим определение:
+\begin{itemize}
+\item $A \subseteq M$~--- выполнено по построению $M$;
+\item если $a, b \in A$, то $a \prec_A b$ влечёт $a \prec_M b$ (по построению
+  $M$). Если же $a \prec_M b$, но $a \nprec_A b$, то существует $A'$, что $a, b
+  \in A'$ и $a \prec_{A'} b$. Тогда $A \not\sqsubseteq A'$ и $A' \not\sqsubseteq
+  A$, что невозможно по линейности порядка;
+\item если $a \in A$, $b \in M \setminus A$, то найдётся $B$, что $b \in B$,
+  отчего $a \prec_B b$ (так как $A \sqsubseteq B$) и $a \prec_M b$ (по
+  построению $M$).
+\end{itemize}
+Тогда $\langle M, (\prec_M)\rangle$~--- требуемая верхняя грань.
+\end{proof}
+
+\begin{thm}
+Лемма Цорна $\to$ теорема Цермело.
+\end{thm}
+\begin{proof}
+Пусть $S = \{\langle P, (\prec)\rangle \mid P \subseteq X,\ (\prec)$ --- полный
+порядок$\}$. Например, для $X = \{0, 1\}$ множество $S = \{\langle\varnothing,
+\varnothing\rangle, \langle\{0\}, \varnothing\rangle, \langle\{1\},
+\varnothing\rangle, \langle X, 0 \prec 1\rangle, \langle X, 1 \prec
+0\rangle\}$. Введём порядок на $S$ как $(\sqsubseteq)$. Заметим, что это~---
+частичный, но не линейный порядок. Например, $\langle X, 0 \prec 1\rangle$
+несравним с $\langle X, 1 \prec 0\rangle$.
+
+По теореме о верхней грани любое линейно упорядоченное подмножество $\langle T,
+(\sqsubseteq)\rangle$ (где $T \subseteq S$) имеет верхнюю грань. Например, для
+$\{\langle\varnothing, \varnothing\rangle, \langle\{0\}, \varnothing\rangle,
+\langle X, 0 \prec 1\rangle\}$ это $\langle X, 0 \prec 1\rangle$.
+
+По лемме Цорна тогда есть $\langle R, (\prec_R)\rangle = \max S$. Заметим, что $R
+= X$, потому что иначе пусть $a \in X \setminus R$. Тогда положив $M = \langle R
+\cup \{a\}, (\prec_R) \cup \{x \prec a \mid x \in R\}\rangle$ получим, что $M$
+тоже вполне упорядоченное (и потому $M \in S$), значит, $R$ не максимальное.
+\end{proof}
+
+\begin{thm}
+Теорема Цермело $\to$ у сюръективных функций существует частичная обратная.
+\end{thm}
+\begin{proof}
+Рассмотрим сюръективную $f : A \to B$. Рассмотрим семейство $R_b = \{a \in A
+\mid f(a) = b\}$. Построим полный порядок на каждом из $R_b$. Тогда $f^{-1}(b)
+= \min R_b$.
+\end{proof}
+\begin{thm}
+Существует частичная обратная у сюръективных функций $\to$ существует
+трансверсаль у семейства непустых дизъюнктных множеств.
+\end{thm}
+\begin{proof}
+Пусть дано семейство непустых дизъюнктных множеств $\mathcal{A}$. Рассмотрим $f
+: \bigcup\mathcal{A} \to \mathcal{A}$, что $f(a) = \bigcup\{A \in \mathcal{A}
+\mid a \in A\}$. Поскольку элементы $\mathcal{A}$ дизъюнктны, $f(a) \in
+\mathcal{A}$ при всех $a$. Тогда существует $f^{-1} : \mathcal{A} \to
+\bigcup\mathcal{A}$. Тогда $\{f^{-1}(A) \mid A \in \mathcal{A}\} \in
+\times\mathcal{A}$.
+\end{proof}
+
+\section{Применение аксиомы выбора}
+\begin{thm}[Диаконеску]
+Если рассмотреть ИИП с ZFC, то для любого $P$ выполнено $\proves P \vee \neg P$.
+\end{thm}
+\begin{proof}
+Рассмотрим $\mathcal{B} = \{0, 1\}$, $A_0 = \{x \in \mathcal{B} \mid x = 0 \vee
+P\}$ и $A_1 = \{x \in \mathcal{B} \mid x = 1 \vee P\}$. $\{A_0, A_1\}$~---
+семейство непустых множеств, и по акс.\ выбора существует $f : \{A_0, A_1\} \to
+\bigcup A_i$, что $f(A_i) \in A_i$. (Если $P$, то $A_0 = A_1 = \{\mathcal{B}\}$.)
+\begin{align*}
+&\proves f(A_0) \in A_0 \amp f(A_1) \in A_1 &&\text{а.выбора: } f(A_i) \in A_i\\
+&\proves f(A_0) \in \mathcal{B} \amp (f(A_0) = 0 \vee P) \amp f(A_1) \in \mathcal{B} \amp (f(A_1) = 1 \vee P) &&\text{а.выделения}\\
+&\proves (f(A_0) = 0 \amp f(A_1) = 1) \vee P &&\text{Удал.\ ($\amp$) + дистр.}\\
+&\proves P \vee f(A_0) \ne f(A_1) &&\text{$0 \ne 1$ и транз.}\\
+&\proves P \to A_0 = A_1 &&\text{Определение } A_i\\
+&\proves A_0 = A_1 \to f(A_0) = f(A_1) &&\text{Конгруэнтность}\\
+&\proves f(A_0) \ne f(A_1) \to \neg P &&\text{Контрапозиция}\\
+&\proves P \vee \neg P &&\text{Подставили}
+\end{align*}
+\end{proof}
+
+\begin{thm}[конечного выбора]
+Если $X_1 \ne \varnothing, \dots, X_n \ne \varnothing$, $X_i \cap X_j =
+\varnothing$ при $i \ne j$, то $\times\{X_1, \dots, X_n\} \ne \varnothing$.
+\end{thm}
+\begin{proof}
+\begin{itemize}
+\item База: $n = 1$. Тогда $\exists x_1.\,x_1 \in X_1$, поэтому $\exists
+  x_1.\,\{x_1\} \in \times\{X_1\}$.
+\item Переход:
+  \[
+  \exists v.\,v \in \times\{X_{1,n}\} \to \exists x_{n+1}.\,x_{n+1} \in X_{n+1} \to v \cup \{x_{n+1}\} \in \times(X_{1,n} \cup \{X_{n+1}\})
+  \]
+\end{itemize}
+\end{proof}
+\begin{axm}[счётного выбора]
+Для счётного семейства непустых множеств существует функция, каждому из которых
+сопоставляющая один из своих элементов.
+\end{axm}
+\begin{axm}[зависимого выбора]
+Если $\forall x \in E.\exists y \in E.\,x R y$, то существует последовательность
+$x_n$: $\forall n.\,x_n R x_{n+1}$.
+\end{axm}
+\begin{dfn}
+Наследственным свойством множества назовём такое свойство, которым обладает как
+само множество, так и все его подмножества.
+\end{dfn}
+\begin{dfn}
+Фундированным множеством назовём такое, которое не пересекается хотя бы с одним
+своим элементом.
+\end{dfn}
+\begin{dfn}
+Универсум фон Неймана $V$~--- все наследственные фундированные множества. При
+наличии аксиомы фундирования можно показать, что $V = \bigcup_a V_a$, где:
+\[
+V_a =
+\begin{cases}
+\text{ничего}, & a = 0\\
+\mathcal{P}(V_b), & a = b'\\
+\bigcup_{b < a}(V_b), & a \text{ --- предельный}
+\end{cases}
+\]
+\end{dfn}
+\begin{dfn}
+Конструктивный универсум $L = \bigcup_a L_a$, где:
+\[
+L_a =
+\begin{cases}
+\text{ничего}, & a = 0\\
+\{\{x \in L_b \mid \varphi(x, t_1, \dots, t_k)\} \mid \varphi \text{ --- формула},\ t_i \in L_b\}, & a = b'\\
+\bigcup_{b < a}(L_b), & a \text{ --- предельный}
+\end{cases}
+\]
+\end{dfn}
+\begin{dfn}[Аксиома конструктивности]
+$V = L$, то есть допустимы только те фундированные множества, которые задаются
+формулами.
+\end{dfn}
+
+\section{Индукция}
+\begin{dfn}[Принцип математической индукции]
+Какое бы ни было $\varphi(x)$, если $\varphi(0)$ и при всех $x$ выполнено
+$\varphi(x) \to \varphi(x')$, то при всех $x$ выполнено и само $\varphi(x)$.
+\end{dfn}
+\begin{dfn}[Принцип полной математической индукции]
+Какое бы ни было $\psi(x)$, если $\psi(0)$ и при всех $x$ выполнено $(\forall
+t.\,t \le x \to \psi(t)) \to \psi(x')$, то при всех $x$ выполнено и само
+$\psi(x)$.
+\end{dfn}
+\begin{dfn}
+Назовём вполне упорядоченное отношением $(\in)$ множество $S$ наследственным
+подмножеством $A$, если $\forall x.\,x \in A \to (\forall t.\,t \in x \to t \in
+S) \to x \in S$.
+\end{dfn}
+\begin{thm}
+Единственным наследственным подмножеством вполне упорядоченного множества
+является оно само.
+\end{thm}
+\begin{proof}
+Пусть $B \subseteq A$~--- наследственное и $B \ne A$. Тогда существует $a =
+\min(A \setminus B)$. Тогда $(\forall t.\,t \in a \to t \in B) \to a \in B$ по
+наследственности $B$, и выполнено $\forall t.\,t \in a \to t \in B$ (по
+минимальности $a$). Значит, $a \in B$.
+\end{proof}
+
+\begin{thm}[Ограниченная трансфинитная индукция]
+Если для $\varphi(x)$ (некоторого утверждения теории множеств) и некоторого
+ординала $\varepsilon$ (ограничения) выполнено $\forall x.\,x \in \varepsilon
+\to (\forall t.\,t \in x \to \varphi(t)) \to \varphi(x)$, то $\forall x.\,x \in
+\varepsilon \to \varphi(x)$.
+\end{thm}
+\begin{proof}
+Рассмотрим $S = \{x \in \varepsilon \mid \varphi(x)\}$. Тогда $x \in S$
+равносильно $x \in \varepsilon \amp \varphi(x)$. Тогда перепишем: $\forall e.\,e
+\in \varepsilon \to (\forall x.\,x \in e \to x \in S) \to e \in S$. Отсюда по
+теореме о наследственных множествах $S = \varepsilon$.
+\end{proof}
+
+\begin{thm}[Неограниченная трансфинитная индукция]
+Если для $\varphi(x)$ (некоторого утверждения теории множеств) выполнено
+$\forall x.\,\text{ординал}(x) \to (\forall t.\,t \in x \to \varphi(t)) \to
+\varphi(x)$, то $\forall x.\,\text{ординал}(x) \to \varphi(x)$.
+
+ИЛИ
+
+Для ординала $\varepsilon$ подмножество $S \subseteq \varepsilon$~---
+наследственное, если и только если одновременно:
+\begin{itemize}
+\item Если $x \in \varepsilon$ и $x = \varnothing$, то $x \in S$;
+\item Если $x \in \varepsilon$ и существует $y$: $y' = x$, то $y \in S \to x \in
+  S$;
+\item Если $x \in \varepsilon$ и $x$~--- предельный, то $(\forall t.\,t \in x \to
+  t \in S) \to (x \in S)$.
+\end{itemize}
+\end{thm}
+\begin{proof}
+($\to$) очевидно. Докажем ($\leftarrow$): пусть $S$ не наследственное: $E :=
+\{e \in \varepsilon \mid (\forall t.\,t \in e \to t \in S) \amp e \notin S\}$ и
+$E \ne \varnothing$. Тогда пусть $e = \min E$.
+\begin{enumerate}
+\item $e = \varnothing$ или предельный. Тогда $(\forall t.\,t \in e \to t \in S)
+  \to (e \in S)$.
+\item $e = y'$. Тогда $y \in \varepsilon$ ($\varepsilon$~--- ординал) и $(\forall
+  t.\,t \in y \to t \in S) \to (y \in S)$ (так как $e$ минимальный, для
+  которого $S$ не наследственное). По условию, $(y \in S) \to (e \in S)$, отсюда
+  $(\forall t.\,t \in e \to t \in S) \to (e \in S)$.
+\end{enumerate}
+\end{proof}
+
+\begin{thm}
+Если $\alpha$~--- кардинальное число, $\alpha \ge \aleph_0$, то $\alpha \cdot
+\alpha = \alpha$.
+\end{thm}
+\begin{proof}
+Трансфинитная индукция: $\varphi(x) := x < \omega \vee x \cdot x = x$.
+\begin{enumerate}
+\item База: $x = \varnothing$. Тогда $\varphi(\varnothing) \equiv \varnothing <
+  \omega \vee |\varnothing \times \varnothing| = \varnothing$, что доказуемо.
+\item Переход: $\forall y.\,y < x \to \varphi(y)$, тогда $\varphi(x)$. Три
+  случая:
+  \begin{enumerate}
+  \item $x < \omega$. Тогда $\varphi(x)$ истинно (аналогично базе).
+  \item $x = \omega$. Счётный случай (рассмотрим отдельно).
+  \item $x > \omega$. Общий случай (рассмотрим отдельно).
+  \end{enumerate}
+\end{enumerate}
+
+\emph{Счётный случай:} $\omega < \omega \vee |\omega \cdot \omega| = \omega$.
+Тогда $\omega \times \omega$ упорядочим так: $\langle p, q\rangle \prec \langle
+s, t\rangle$, если:
+\begin{enumerate}
+\item $\max(p, q) < \max(s, t)$
+\item $\max(p, q) = \max(s, t)$ и $q < t$
+\item $\max(p, q) = \max(s, t)$, $q = t$ и $p < s$
+\end{enumerate}
+Очевидно, можно построить биекцию между так упорядоченными значениями и
+$\omega$.
+
+\emph{Общий случай:} $|\alpha \cdot \alpha| = \alpha$. \todo{} Аналогично
+счётному случаю, $\alpha \times \alpha$ упорядочим так: $\langle p, q\rangle
+\prec \langle s, t\rangle$, если:
+\begin{enumerate}
+\item $p \cup q < s \cup t$
+\item $p \cup q = s \cup t$ и $q < t$
+\item $p \cup q = s \cup t$, $q = t$ и $p < s$
+\end{enumerate}
+\begin{itemize}
+\item Легко заметить, что это~--- линейный порядок (показав, что $p \nprec q$ и
+  $q \nprec p$ влечёт $p = q$)
+\item \dots и полный порядок. Найти наименьший в $S \ne \varnothing$ возможно,
+  рассмотрев $m_1 := \min\{p \cup q \mid \langle p, q\rangle \in S\}$ и $M_1 :=
+  \{\langle p, q\rangle \mid \langle p, q\rangle \in S,\ p \cup q = m_1\}$,
+  затем $m_2 := \min\{q \mid \langle p, q\rangle \in M_1\}$, $M_2 := \{\langle p,
+  q\rangle \mid \langle p, q\rangle \in M_1,\ q = m_2\}$. Тогда требуемым
+  наименьшим в $S$ будет $\min\{p \mid \langle p, q\rangle \in M_2\}$
+\item Тогда $\langle\alpha \times \alpha, (\prec)\rangle$ соответствует какой-то
+  ординал $\tau$ и сохраняющая порядок биекция $t : \tau \to \alpha \times
+  \alpha$.
+\item Заметим, что $x < \omega$ тогда и только тогда, когда $\bigcup(\bigcup
+  t(x)) < \omega$ (очевидно из того, что $|\{z \mid \text{ординал}(z),\ z <
+  x\}| = |\{p \mid p \prec t(x)\}|$).
+\item Покажем, что $|\tau| = \alpha$. Докажем $\tau = \alpha$. Очевидно, что
+  $\tau \ge \alpha$ (так как $|\tau| = |\alpha \times \alpha| \ge \alpha$). Но
+  пусть $\tau > \alpha$.
+\item Тогда $t(\alpha) = \langle\zeta, \eta\rangle$ определено (у $\alpha$ есть
+  образ).
+\item Пусть $\sigma := \zeta \cup \eta$. Очевидно, $\langle\zeta, \eta\rangle
+  \preceq \langle\sigma, \sigma\rangle$ и $\sigma \in \alpha$.
+\item Каков образ $t$ на этом начальном отрезке? $\{t(x) \mid x < \alpha\}
+  \subseteq \{\langle p, q\rangle \mid p, q < \sigma\}$. Поэтому $\alpha <
+  |(\sigma+1) \times (\sigma+1)|$.
+\item С другой стороны, $\sigma < \alpha$. Поскольку $\alpha$~--- кардинал (т.е.,
+  в частности, предельный ординал), то $\sigma + 1 < \alpha$ и $|\sigma + 1| <
+  \alpha$.
+\item По предположению индукции, $|\sigma + 1| < \omega \vee |\sigma + 1| =
+  |\sigma + 1| \cdot |\sigma + 1|$, по свойствам $(\prec)$ имеем $\sigma >
+  \omega$.
+\item Отсюда $\alpha < |(\sigma+1) \times (\sigma+1)| = |\sigma + 1| < \alpha$,
+  что невозможно.
+\end{itemize}
+\end{proof}
+
+\section{Система $S_\infty$}
+\begin{dfn}
+Введем исчисление $S_\infty$.
+\begin{enumerate}
+\item Язык: связки $\neg$, $\vee$, $\forall$, $=$; нелогические символы:
+  $(+)$, $(\cdot)$, $(')$, $0$; переменные: $x$.
+\item Аксиомы: все истинные формулы вида $\theta_1 = \theta_2$; все истинные
+  отрицания формул вида $\neg\theta_1 = \theta_2$ ($\theta_i$~--- термы без
+  переменных).
+\item Структурные (слабые) правила:
+  \[
+  \infer{\zeta \vee \beta \vee \alpha \vee \delta}{\zeta \vee \alpha \vee \beta \vee \delta}
+  \qquad
+  \infer{\alpha \vee \delta}{\alpha \vee \alpha \vee \delta}
+  \]
+  Сильные правила:
+  \[
+  \infer{\alpha \vee \beta}{\beta}
+  \qquad
+  \infer{\neg(\alpha \vee \beta) \vee \delta}{\neg\alpha \vee \delta & \neg\beta \vee \delta}
+  \qquad
+  \infer{\neg\neg\alpha \vee \delta}{\alpha \vee \delta}
+  \qquad
+  \infer{(\neg\forall x.\alpha) \vee \delta}{\neg\alpha[x := \theta] \vee \delta}
+  \]
+  Формулы в правилах, обозначенные буквами $\zeta$ и $\delta$, называются
+  боковыми и могут отсутствовать.
+\item Бесконечная индукция:
+  \[
+  \infer{(\forall x.\alpha) \vee \delta}{\alpha[x := \overline{0}] \vee \delta & \alpha[x := \overline{1}] \vee \delta & \alpha[x := \overline{2}] \vee \delta & \dots}
+  \]
+\item Сечение:
+  \[
+  \infer{\zeta \vee \delta}{\zeta \vee \alpha & \neg\alpha \vee \delta}
+  \]
+  Здесь $\alpha$~--- секущая формула, число связок в $\neg\alpha$~--- степень
+  сечения. В отличие от других правил, в правиле сечения хотя бы одна из боковых
+  формул $\zeta$ или $\delta$ должна присутствовать.
+\end{enumerate}
+\begin{enumerate}
+\item Доказательства образуют деревья.
+\item Каждой формуле в дереве сопоставим порядковое число (ординал).
+\item Порядковое число заключения любого неструктурного правила строго больше
+  порядкового числа его посылок (больше или равно в случае структурного
+  правила).
+  \[
+  \infer{(\neg\neg\forall x.\neg x' = 0)_{\omega+1}}{
+    \infer{(\forall x.\neg x' = 0)_\omega}{(\neg 1 = 0)_1 & (\neg 2 = 0)_2 & (\neg 3 = 0)_4 & (\neg 4 = 0)_8 & \dots}}
+  \]
+\item Существует конечная максимальная степень сечения в дереве (назовём её
+  степенью вывода).
+\end{enumerate}
+\end{dfn}
+
+\begin{thm}
+Если $\alpha$ имеет вывод степени $m > 0$ порядка $t$, то можно найти вывод
+степени строго меньшей $m$ с порядком $2^t$.
+\end{thm}
+\begin{proof}
+Трансфинитная индукция. Пусть для всех деревьев порядка $t_1 < t$ условие
+выполнено. Покажем, что оно выполнено для порядка $t$. Рассмотрим заключительное
+правило. Это может быть\dots
+\begin{enumerate}
+\item Не сечение.
+\item Сечение, секущая формула~--- элементарная.
+\item Сечение, секущая формула~--- $\neg\alpha$.
+\item Сечение, секущая формула~--- $\alpha \vee \beta$.
+\item Сечение, секущая формула~--- $\forall x.\alpha$.
+\end{enumerate}
+
+\emph{Случай 1. Не сечение.}
+\[
+\infer{(\alpha)_t}{(\pi_0)_{t_0} & (\pi_1)_{t_1} & (\pi_2)_{t_2} & \dots}
+\]
+Заменим доказательства посылок $(\pi_i)_{t_i}$ на $(\pi'_i)_{2^{t_i}}$ по
+индукционному предположению.
+\begin{enumerate}
+\item Поскольку степени посылок $m'_i < m_i$, то $\max m'_i < \max m_i$.
+\item Поскольку $t_i \le t$, то $2^{t_i} \le 2^t$.
+\end{enumerate}
+
+\emph{Случай 5. Сечение с формулой вида $\forall x.\alpha$.}
+\[
+\infer{\zeta \vee \delta}{\zeta \vee \forall x.\alpha & (\neg\forall x.\alpha) \vee \delta}
+\]
+Причём степень и порядок выводов компонент, соответственно, $(m_1, t_1)$ и
+$(m_2, t_2)$.
+\begin{enumerate}
+\item По индукции, вывод $\zeta \vee \forall x.\alpha$ можно упростить до
+  $(m'_1, 2^{t_1})$.
+\item По обратимости, можно построить вывод $\zeta \vee \alpha[x := \theta]$ за
+  $(m'_1, 2^{t_1})$.
+\item В формуле $(\neg\forall x.\alpha) \vee \delta$ формула $\neg\forall
+  x.\alpha$ получена либо ослаблением, либо квантификацией из
+  $\neg\alpha[x := \theta_k] \vee \delta_k$.
+  \begin{enumerate}
+  \item Каждое правило квантификации заменим на:
+    \[
+    \infer{\zeta \vee \delta_k}{\zeta \vee \alpha[x := \theta_k] & (\neg\alpha[x := \theta_k]) \vee \delta_k}
+    \]
+  \item Остальные вхождения $\neg\forall x.\alpha$ заменим на $\zeta$ (в
+    правилах ослабления).
+  \end{enumerate}
+\item В получившемся дереве меньше степень~--- так как в $\neg\alpha[x :=
+  \theta]$ меньше связок, чем в $\neg\forall x.\alpha$.
+\end{enumerate}
+\end{proof}
+
+\begin{dfn}[Итерационная экспонента]
+\[
+(a\uparrow)^m(t) =
+\begin{cases}
+t, & m = 0\\
+a^{(a\uparrow)^{m-1}(t)}, & m > 0
+\end{cases}
+\]
+\end{dfn}
+\begin{thm}[об устранении сечений]
+Если $\proves_\infty \sigma$ степени $m$ порядка $t$, то найдётся доказательство
+без сечений порядка $(2\uparrow)^m(t)$.
+\end{thm}
+\begin{dfn}
+$\varepsilon_0$~--- неподвижная точка $\varepsilon_0 = \omega^{\varepsilon_0}$.
+Иначе говоря, $\varepsilon_0 = \{\omega, \omega^\omega, \omega^{\omega^\omega},
+(\omega\uparrow)^3(\omega), (\omega\uparrow)^4(\omega), \dots\}$.
+\end{dfn}
+Очевидно, что теорема об устранении сечений может быть доказана трансфинитной
+индукцией до ординала $\varepsilon_0$ (максимальный порядок дерева вывода, при
+правильной нумерации вершин).
+
+\begin{lmm}
+Если $\proves_\infty \alpha$ и $\proves_\infty \neg\alpha$, тогда $\proves_\infty
+\neg 0 = 0$.
+\end{lmm}
+\begin{thm}[о непротиворечивости формальной арифметики]
+$\nvdash_\infty \neg 0 = 0$.
+\end{thm}
+\begin{proof}
+Пусть $\proves_\infty \neg 0 = 0$, устраним сечения и рассмотрим заключительное
+правило.
+\begin{enumerate}
+\item Правило де Моргана? Нет отрицаний дизъюнкции ($\neg(\alpha \vee \beta)
+  \vee \delta$).
+\item Отрицание? Нет двойного отрицания ($\neg\neg\alpha \vee \delta$).
+\item Бесконечная индукция или квантификация? Нет квантора.
+\item Ослабление? Нет дизъюнкции ($\alpha \vee \beta$), хотя $\beta$ обязана
+  присутствовать.
+\item Сечение? Исключено по условию.
+\end{enumerate}
+То есть, неизбежно, $\neg 0 = 0$~--- аксиома, что также неверно.
+\end{proof}
+
+\section{Метод резолюции}
+Сколемизация не сохраняет общезначимость.
+
+Дана формула $\alpha$.
+\begin{enumerate}
+\item Упростим формулу~--- поверхностные кванторы всеобщности, сколемизация.
+  Умеем строить формулу $\beta$: $\beta := \forall x_1.\forall x_2.\forall
+  x_k.\,\delta_1(x_1, \dots, x_k) \amp \dots \amp \delta_n(x_1, \dots, x_k)$.
+
+  $\alpha$ доказуема тогда и только тогда, когда при всех оценках предикатных и
+  функциональных символов найдётся значение сколемовских функций $e_k$, при
+  которых $\beta$ всегда истинна (слоёный пирог из кванторов).
+\item Упрощаем предметное множество~--- заменили произвольный $D$ на эрбранов
+  универсум $H$. Выполнимость формулы эквивалентна выполнимости на эрбрановом
+  универсуме.
+\item Осталось избавиться от кванторов всеобщности и организовать правильный
+  перебор (эрбранов универсум может быть бесконечным).
+\end{enumerate}
+\begin{dfn}
+Эрбранов универсум $H_\varphi$~--- всевозможные комбинации функциональных
+символов из формулы $\varphi$. Если в формуле нет нульместных функциональных
+символов, к множеству символов формулы добавляется свежий нульместный
+функциональный символ $a$ и все комбинации с его участием.
+\end{dfn}
+\begin{dfn}
+Если $\varphi$~--- бескванторная формула, то её эрбранова оценка задаётся как
+$\langle H_\varphi, F, P, E\rangle$, функции $F$ определяются как текстовые
+подстановки $\llbracket f(\theta)\rrbracket = \text{``}f(\text{''} +\!+
+\llbracket\theta\rrbracket +\!+ \text{``)''}$, предикаты $P$ задаются
+перечислением истинных.
+\end{dfn}
+\begin{dfn}
+Система дизъюнктов $S = \{\delta_1, \dots, \delta_n\}$ противоречива, если для
+каждой оценки $M = \langle D, P, F, E\rangle$ найдётся $\delta_t$ и такой набор
+$\vec d \in D$, что $\llbracket\delta_t\rrbracket^{\vec x := \vec d} = \False$.
+\end{dfn}
+\begin{dfn}
+Дизъюнкт с подставленными значениями из эрбранового универсума $H_\beta$ вместо
+переменных называется основным примером формулы $\beta$.
+\end{dfn}
+\begin{dfn}
+Система основных примеров~--- все основные примеры, опровергаемые хоть при
+какой-то эрбрановой оценке $\mathcal{M}$:
+\[
+\mathcal{E}_S = \{\delta_t[\vec x := \vec d] \mid \text{существует } \mathcal{M},\ \text{что } \llbracket\delta_t[\vec x := \vec d]\rrbracket(M) = \False;\ d_i \in H_\beta\}
+\]
+\end{dfn}
+\begin{thm}[Гёделя о компактности]
+Если $\Gamma$~--- некоторое семейство бескванторных формул, то $\Gamma$ имеет
+модель тогда и только тогда, когда любое его конечное подмножество имеет модель.
+\end{thm}
+\begin{thm}[Эрбрана]
+Система дизъюнктов $S$ противоречива тогда и только тогда, когда у
+$\mathcal{E}_S$ существует конечное противоречивое в эрбрановой интерпретации
+подмножество.
+\end{thm}
+\begin{proof}
+($\Leftarrow$) Пусть $\{\varepsilon_1, \dots, \varepsilon_t\} \subseteq
+\mathcal{E}_S$ противоречиво, $\varepsilon_i = \delta_{m_i}[\vec x := \vec
+d_i]$, где $\vec d_i$~--- набор значений из $H$. То есть, для любой эрбрановой
+оценки $M$ существует $\varepsilon_p$, что $\llbracket\varepsilon_p\rrbracket_M =
+\False$. Отсюда, по теореме о выполнимости $S$ тоже противоречива.
+
+($\Rightarrow$) Если $S$ противоречива, то $\mathcal{E}_S$ противоречива. Тогда у
+неё нет модели. Тогда у неё найдётся конечное противоречивое подмножество
+(компактность). Возможно убедиться в невыполнимости за конечное время.
+\end{proof}
+
+\subsection*{Общая схема алгоритма}
+Цель алгоритма: убедиться, что $\alpha$ доказуемо.
+\begin{enumerate}
+\item По формуле $\alpha$ строим её отрицание $\neg\alpha$.
+\item Приводим к виду с поверхностными кванторами, проводим сколемизацию,
+  находим КНФ: $\beta = \forall x_1.\dots.\forall x_k.\,\delta_1 \amp \dots \amp
+  \delta_n$.
+\item Убедимся, что при любом $D$ и значениях функциональных и предикатных
+  символов и сколемовских функций $e_k$ найдутся $d_i \in D$, что один из
+  дизъюнктов $\delta_t$ при подстановке $\vec x := \vec d$ ложный.
+\item Для этого строим универсум Эрбрана $H$, и систему основных примеров
+  $\mathcal{E}_S$, её противоречивость эквивалентна невыполнимости $\beta$.
+\item Конечное противоречивое подмножество обязательно находится в каком-то
+  начальном отрезке $\{\varepsilon_1, \dots, \varepsilon_t\} \subseteq
+  \mathcal{E}_S$ (если оно есть).
+\end{enumerate}
+
+\begin{dfn}[Правило резолюции (исчисление высказываний)]
+Пусть даны два дизъюнкта, $\alpha_1 \vee \beta$ и $\alpha_2 \vee \neg\beta$. Тогда
+следующее правило вывода называется правилом резолюции:
+\[ \infer{\alpha_1 \vee \alpha_2}{\alpha_1 \vee \beta & \alpha_2 \vee \neg\beta} \]
+\end{dfn}
+\begin{dfn}
+Алгебраический терм $\theta := x \mid f(\theta_1, \dots, \theta_n)$, где
+$x$~--- переменная, $f(\theta_1, \dots, \theta_n)$~--- применение функции.
+Напомним, что константы~--- нульместные функциональные символы, собственно
+переменные будем обозначать последними буквами латинского алфавита.
+\end{dfn}
+\begin{dfn}
+Система уравнений в алгебраических термах $\begin{cases}\theta_1 = \sigma_1\\
+\vdots\\ \theta_n = \sigma_n\end{cases}$, где $\theta_i$ и $\sigma_i$~--- термы.
+\end{dfn}
+\begin{dfn}
+$\{x_i\} = X$~--- множество переменных, $\{\theta_i\} = T$~--- множество термов.
+\end{dfn}
+\begin{dfn}
+Подстановка~--- отображение вида $\pi_0 : X \to T$, тождественное почти везде (за
+исключением конечного числа переменных). $\pi_0(x)$ может быть либо $\pi_0(x) =
+\theta_i$, либо $\pi_0(x) = x$. Доопределим $\pi : T \to T$, где
+\begin{enumerate}
+\item $\pi(x) = \pi_0(x)$
+\item $\pi(f(\theta_1, \dots, \theta_k)) = f(\pi(\theta_1), \dots, \pi(\theta_k))$
+\end{enumerate}
+Решить уравнение в алгебраических термах~--- найти такую наиболее общую
+подстановку $\pi$, что $\pi(\theta_1) = \pi(\theta_2)$. Наиболее общая
+подстановка~--- такая, для которой другие подстановки являются её частными
+случаями.
+\end{dfn}
+\begin{dfn}
+Пусть даны формулы $\alpha$ и $\beta$. Тогда решением задачи унификации будет
+такая наиболее общая подстановка $\pi = \mathcal{U}[\alpha, \beta]$, что
+$\pi(\alpha) = \pi(\beta)$. Также, $\pi$ назовём наиболее общим унификатором.
+\end{dfn}
+\begin{dfn}[Правило резолюции (исчисление предикатов)]
+Пусть $\sigma_1$ и $\sigma_2$~--- подстановки, заменяющие переменные в формуле на
+свежие. Тогда правило резолюции выглядит так: \todo{}
+\end{dfn}
+
+\section{Информация о курсе}
+Поток~--- y2024. Группы M3232--M3239. Преподаватель~--- Штукенберг Дмитрий
+Григорьевич.
+
+\end{document}
